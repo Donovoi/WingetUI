@@ -325,11 +325,11 @@ namespace ModernWindow.PackageEngine.Classes
         /// Each manager MUST implement this method.
         /// </summary>
         /// <param name="package">The package that was installed</param>
-        /// <param name="options">The options with which the package was installed. They may be modified if the returned value is OperationVeredict.AutoRetry</param>
+        /// <param name="options">The options with which the package was installed. They may be modified if the returned value is OperationVerdict.AutoRetry</param>
         /// <param name="ReturnCode">The exit code of the process</param>
         /// <param name="Output">the output of the process</param>
-        /// <returns>An OperationVeredict value representing the result of the installation</returns>
-        public abstract OperationVeredict GetInstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output);
+        /// <returns>An OperationVerdict value representing the result of the installation</returns>
+        public abstract OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output);
 
 
         /// <summary>
@@ -337,22 +337,22 @@ namespace ModernWindow.PackageEngine.Classes
         /// Each manager MUST implement this method.
         /// </summary>
         /// <param name="package">The package that was updated</param>
-        /// <param name="options">The options with which the package was updated. They may be modified if the returned value is OperationVeredict.AutoRetry</param>
+        /// <param name="options">The options with which the package was updated. They may be modified if the returned value is OperationVerdict.AutoRetry</param>
         /// <param name="ReturnCode">The exit code of the process</param>
         /// <param name="Output">the output of the process</param>
-        /// <returns>An OperationVeredict value representing the result of the update</returns>
-        public abstract OperationVeredict GetUpdateOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output);
+        /// <returns>An OperationVerdict value representing the result of the update</returns>
+        public abstract OperationVerdict GetUpdateOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output);
 
         /// <summary>
         /// Decides and returns the verdict of the uninstall operation.
         /// Each manager MUST implement this method.
         /// </summary>
         /// <param name="package">The package that was uninstalled</param>
-        /// <param name="options">The options with which the package was uninstalled. They may be modified if the returned value is OperationVeredict.AutoRetry</param>
+        /// <param name="options">The options with which the package was uninstalled. They may be modified if the returned value is OperationVerdict.AutoRetry</param>
         /// <param name="ReturnCode">The exit code of the process</param>
         /// <param name="Output">the output of the process</param>
-        /// <returns>An OperationVeredict value representing the result of the uninstall</returns>
-        public abstract OperationVeredict GetUninstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output);
+        /// <returns>An OperationVerdict value representing the result of the uninstall</returns>
+        public abstract OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output);
 
         /// <summary>
         /// Refreshes the Package Manager sources/indexes
@@ -399,9 +399,9 @@ namespace ModernWindow.PackageEngine.Classes
         public abstract ManagerSource[] GetKnownSources();
         public abstract string[] GetAddSourceParameters(ManagerSource source);
         public abstract string[] GetRemoveSourceParameters(ManagerSource source);
-        public abstract OperationVeredict GetAddSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output);
+        public abstract OperationVerdict GetAddSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output);
         
-        public abstract OperationVeredict GetRemoveSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output);
+        public abstract OperationVerdict GetRemoveSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output);
         protected abstract Task<ManagerSource[]> GetSources_UnSafe();
     }
 

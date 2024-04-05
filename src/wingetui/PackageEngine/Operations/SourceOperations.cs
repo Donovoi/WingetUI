@@ -65,9 +65,9 @@ namespace ModernWindow.PackageEngine.Operations
             };
         }
 
-        protected override OperationVeredict GetProcessVeredict(int ReturnCode, string[] Output)
+        protected override OperationVerdict GetProcessVerdict(int ReturnCode, string[] Output)
         {
-            return (Source.Manager as PackageManagerWithSources).GetAddSourceOperationVeredict(Source, ReturnCode, Output);
+            return (Source.Manager as PackageManagerWithSources).GetAddSourceOperationVerdict(Source, ReturnCode, Output);
         }
 
         protected override async Task<AfterFinshAction> HandleFailure()
@@ -201,9 +201,9 @@ namespace ModernWindow.PackageEngine.Operations
             };
         }
 
-        protected override OperationVeredict GetProcessVeredict(int ReturnCode, string[] Output)
+        protected override OperationVerdict GetProcessVerdict(int ReturnCode, string[] Output)
         {
-            return (Source.Manager as PackageManagerWithSources).GetRemoveSourceOperationVeredict(Source, ReturnCode, Output);
+            return (Source.Manager as PackageManagerWithSources).GetRemoveSourceOperationVerdict(Source, ReturnCode, Output);
         }
 
         protected override async Task<AfterFinshAction> HandleFailure()

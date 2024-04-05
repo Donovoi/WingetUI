@@ -183,27 +183,27 @@ namespace ModernWindow.PackageEngine.Managers
             return Packages.ToArray();
         }
 
-        public override OperationVeredict GetInstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            return GetUninstallOperationVeredict(package, options, ReturnCode, Output);
+            return GetUninstallOperationVerdict(package, options, ReturnCode, Output);
         }
 
-        public override OperationVeredict GetUpdateOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUpdateOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            return GetUninstallOperationVeredict(package, options, ReturnCode, Output);
+            return GetUninstallOperationVerdict(package, options, ReturnCode, Output);
         }
 
-        public override OperationVeredict GetUninstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
             string output_string = string.Join("\n", Output);
 
             if (output_string.Contains("AdminPrivilegesAreRequired") && !options.RunAsAdministrator)
             {
                 options.RunAsAdministrator = true;
-                return OperationVeredict.AutoRetry;
+                return OperationVerdict.AutoRetry;
             }
 
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
@@ -515,14 +515,14 @@ namespace ModernWindow.PackageEngine.Managers
             return new string[] { "Unregister-PSRepository", "-Name", source.Name };
         }
 
-        public override OperationVeredict GetAddSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+        public override OperationVerdict GetAddSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
         {
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
 
-        public override OperationVeredict GetRemoveSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+        public override OperationVerdict GetRemoveSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
         {
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
     }
 

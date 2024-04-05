@@ -151,41 +151,41 @@ namespace ModernWindow.PackageEngine.Managers
 
             return Packages.ToArray();
         }
-        public override OperationVeredict GetInstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
             string output_string = string.Join("\n", Output);
 
             if (ReturnCode == 1641 || ReturnCode == 0)
-                return OperationVeredict.Succeeded;
+                return OperationVerdict.Succeeded;
             else if (ReturnCode == 3010)
-                return OperationVeredict.Succeeded; // TODO: Restart required
+                return OperationVerdict.Succeeded; // TODO: Restart required
             else if ((output_string.Contains("Run as administrator") || output_string.Contains("The requested operation requires elevation") || output_string.Contains("ERROR: Exception calling \"CreateDirectory\" with \"1\" argument(s): \"Access to the path")) && !options.RunAsAdministrator)
             {
                 options.RunAsAdministrator = true;
-                return OperationVeredict.AutoRetry;
+                return OperationVerdict.AutoRetry;
             }
-            return OperationVeredict.Failed;
+            return OperationVerdict.Failed;
         }
 
-        public override OperationVeredict GetUpdateOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUpdateOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            return GetInstallOperationVeredict(package, options, ReturnCode, Output);
+            return GetInstallOperationVerdict(package, options, ReturnCode, Output);
         }
 
-        public override OperationVeredict GetUninstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
             string output_string = string.Join("\n", Output);
 
             if (ReturnCode == 1641 || ReturnCode == 1614 || ReturnCode == 1605 || ReturnCode == 0)
-                return OperationVeredict.Succeeded;
+                return OperationVerdict.Succeeded;
             else if (ReturnCode == 3010)
-                return OperationVeredict.Succeeded; // TODO: Restart required
+                return OperationVerdict.Succeeded; // TODO: Restart required
             else if ((output_string.Contains("Run as administrator") || output_string.Contains("The requested operation requires elevation")) && !options.RunAsAdministrator)
             {
                 options.RunAsAdministrator = true;
-                return OperationVeredict.AutoRetry;
+                return OperationVerdict.AutoRetry;
             }
-            return OperationVeredict.Failed;
+            return OperationVerdict.Failed;
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
@@ -211,9 +211,10 @@ namespace ModernWindow.PackageEngine.Managers
         {
             string[] parameters = GetInstallParameters(package, options);
             parameters[0] = Properties.UpdateVerb;
+            Array.Resize(ref parameters, parameters.Length + 1);
+            parameters[parameters.Length - 1] = "--ignore-dependencies";
             return parameters;
         }
-
         public override string[] GetUninstallParameters(Package package, InstallationOptions options)
         {
             List<string> parameters = new() { Properties.UninstallVerb, package.Id, "-y" };
@@ -485,7 +486,7 @@ namespace ModernWindow.PackageEngine.Managers
             };
             process.Start();
             status.Version = (await process.StandardOutput.ReadToEndAsync()).Trim();
-    
+
             // If the user is running bundled chocolatey and chocolatey is not in path, add chocolatey to path
             if (/*Tools.GetSettings("ShownWelcomeWizard") && */!Tools.GetSettings("UseSystemChocolatey") && !Tools.GetSettings("ChocolateyAddedToPath") && !File.Exists(@"C:\ProgramData\Chocolatey\bin\choco.exe"))
             {
@@ -495,7 +496,7 @@ namespace ModernWindow.PackageEngine.Managers
                 Environment.SetEnvironmentVariable("chocolateyinstall", Path.GetDirectoryName(status.ExecutablePath), EnvironmentVariableTarget.User);
                 Tools.SetSettings("ChocolateyAddedToPath", true);
             }
-            
+
             if (status.Found && IsEnabled())
                 await RefreshPackageIndexes();
 
@@ -560,14 +561,14 @@ namespace ModernWindow.PackageEngine.Managers
             return new string[] { "source", "remove", "--name", source.Name, "-y" };
         }
 
-        public override OperationVeredict GetAddSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+        public override OperationVerdict GetAddSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
         {
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
 
-        public override OperationVeredict GetRemoveSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+        public override OperationVerdict GetRemoveSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
         {
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
     }
 }

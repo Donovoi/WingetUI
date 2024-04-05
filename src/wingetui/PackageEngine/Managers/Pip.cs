@@ -183,29 +183,29 @@ namespace ModernWindow.PackageEngine.Managers
             return Packages.ToArray();
         }
 
-        public override OperationVeredict GetInstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
             string output_string = string.Join("\n", Output);
 
             if (ReturnCode == 0)
-                return OperationVeredict.Succeeded;
+                return OperationVerdict.Succeeded;
             else if (output_string.Contains("--user") && package.Scope == PackageScope.Global)
             {
                 package.Scope = PackageScope.User;
-                return OperationVeredict.AutoRetry;
+                return OperationVerdict.AutoRetry;
             }
             else
-                return OperationVeredict.Failed;
+                return OperationVerdict.Failed;
         }
 
-        public override OperationVeredict GetUpdateOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUpdateOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            return GetInstallOperationVeredict(package, options, ReturnCode, Output);
+            return GetInstallOperationVerdict(package, options, ReturnCode, Output);
         }
 
-        public override OperationVeredict GetUninstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            return GetInstallOperationVeredict(package, options, ReturnCode, Output);
+            return GetInstallOperationVerdict(package, options, ReturnCode, Output);
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {

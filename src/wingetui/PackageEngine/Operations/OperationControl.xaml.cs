@@ -12,10 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.UI;
+using System.Security.Principal;
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -276,7 +279,7 @@ namespace ModernWindow.PackageEngine
 
         protected void RemoveFromQueue()
         {
-            while(Tools.OperationQueue.IndexOf(this) != -1)
+            while (Tools.OperationQueue.IndexOf(this) != -1)
                 Tools.OperationQueue.Remove(this);
         }
         protected void AddToQueue()
@@ -344,20 +347,26 @@ namespace ModernWindow.PackageEngine
                 if (Status == OperationStatus.Cancelled)
                     return; // If the operation was cancelled, do nothing.
 
-                Tools.TooltipStatus.OperationsInProgress = Tools.TooltipStatus.OperationsInProgress + 1;
+                Tools.TooltipStatus.OperationsInProgress++;
 
                 Status = OperationStatus.Running;
                 LineInfoText = Tools.Translate("Launching subprocess...");
-                ProcessStartInfo startInfo = new();
-                startInfo.RedirectStandardInput = true;
-                startInfo.RedirectStandardOutput = true;
-                startInfo.RedirectStandardError = true;
-                startInfo.UseShellExecute = false;
-                startInfo.CreateNoWindow = true;
-                startInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
-                startInfo.StandardInputEncoding = System.Text.Encoding.UTF8;
-                startInfo.StandardErrorEncoding = System.Text.Encoding.UTF8;
-                startInfo.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string gsudoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gsudo.exe");
+
+                ProcessStartInfo startInfo = new()
+                {
+                    FileName = gsudoPath,
+                    Arguments = "-w -e " + Process.StartInfo.FileName + " " + Process.StartInfo.Arguments,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = System.Text.Encoding.UTF8,
+                    StandardInputEncoding = System.Text.Encoding.UTF8,
+                    StandardErrorEncoding = System.Text.Encoding.UTF8,
+                    WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                };
 
                 Process = BuildProcessInstance(startInfo);
 
@@ -371,20 +380,17 @@ namespace ModernWindow.PackageEngine
 
                 Process.Start();
 
-                string line;
-                while ((line = await Process.StandardOutput.ReadLineAsync()) != null)
+                while (await Process.StandardOutput.ReadLineAsync() is { } line)
                 {
-                    if (line.Trim() != "")
-                    {
-                        if (line.Contains("For the question below") || line.Contains("Would remove:")) // Mitigate chocolatey timeouts
-                            Process.StandardInput.WriteLine("");
+                    if (line.Trim() == "") continue;
+                    if (line.Contains("For the question below") || line.Contains("Would remove:")) // Mitigate chocolatey timeouts
+                        await Process.StandardInput.WriteLineAsync("");
 
-                        LineInfoText = line.Trim();
-                        if (line.Length > 5 || ProcessOutput.Count == 0)
-                            ProcessOutput.Add("    | " + line);
-                        else
-                            ProcessOutput[^1] = "    | " + line;
-                    }
+                    LineInfoText = line.Trim();
+                    if (line.Length > 5 || ProcessOutput.Count == 0)
+                        ProcessOutput.Add("    | " + line);
+                    else
+                        ProcessOutput[^1] = "    | " + line;
                 }
 
                 foreach (string errorLine in (await Process.StandardError.ReadToEndAsync()).Split('\n'))
@@ -400,13 +406,13 @@ namespace ModernWindow.PackageEngine
 
                 AfterFinshAction postAction = AfterFinshAction.ManualClose;
 
-                OperationVeredict OperationVeredict = GetProcessVeredict(Process.ExitCode, ProcessOutput.ToArray());
+                OperationVerdict OperationVerdict = GetProcessVerdict(Process.ExitCode, ProcessOutput.ToArray());
 
                 if (Status != OperationStatus.Cancelled)
                 {
-                    switch (OperationVeredict)
+                    switch (OperationVerdict)
                     {
-                        case OperationVeredict.Failed:
+                        case OperationVerdict.Failed:
                             Status = OperationStatus.Failed;
                             RemoveFromQueue();
                             Tools.TooltipStatus.ErrorsOccurred = Tools.TooltipStatus.ErrorsOccurred + 1;
@@ -414,13 +420,13 @@ namespace ModernWindow.PackageEngine
                             Tools.TooltipStatus.ErrorsOccurred = Tools.TooltipStatus.ErrorsOccurred - 1;
                             break;
 
-                        case OperationVeredict.Succeeded:
+                        case OperationVerdict.Succeeded:
                             Status = OperationStatus.Succeeded;
                             postAction = await HandleSuccess();
                             RemoveFromQueue();
                             break;
 
-                        case OperationVeredict.AutoRetry:
+                        case OperationVerdict.AutoRetry:
                             Status = OperationStatus.Pending;
                             postAction = AfterFinshAction.Retry;
                             break;
@@ -471,7 +477,7 @@ namespace ModernWindow.PackageEngine
 
                 var oldHistory = Tools.GetSettingsValue("OperationHistory").Split("\n");
 
-                if(oldHistory.Length > 1000)
+                if (oldHistory.Length > 1000)
                 {
                     oldHistory = oldHistory.Take(1000).ToArray();
                 }
@@ -507,7 +513,7 @@ namespace ModernWindow.PackageEngine
 
         protected abstract void Initialize();
         protected abstract Process BuildProcessInstance(ProcessStartInfo startInfo);
-        protected abstract OperationVeredict GetProcessVeredict(int ReturnCode, string[] Output);
+        protected abstract OperationVerdict GetProcessVerdict(int ReturnCode, string[] Output);
         protected abstract Task<AfterFinshAction> HandleFailure();
         protected abstract Task<AfterFinshAction> HandleSuccess();
         protected abstract string[] GenerateProcessLogHeader();

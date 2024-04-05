@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ModernWindow.PackageEngine.Operations
 {
-    public enum OperationVeredict
+    public enum OperationVerdict
     {
         Succeeded,
         Failed,
@@ -134,9 +134,9 @@ namespace ModernWindow.PackageEngine.Operations
             };
         }
 
-        protected override OperationVeredict GetProcessVeredict(int ReturnCode, string[] Output)
+        protected override OperationVerdict GetProcessVerdict(int ReturnCode, string[] Output)
         {
-            return Package.Manager.GetInstallOperationVeredict(Package, Options, ReturnCode, Output);
+            return Package.Manager.GetInstallOperationVerdict(Package, Options, ReturnCode, Output);
         }
 
         protected override async Task<AfterFinshAction> HandleFailure()
@@ -275,9 +275,9 @@ namespace ModernWindow.PackageEngine.Operations
             };
         }
 
-        protected override OperationVeredict GetProcessVeredict(int ReturnCode, string[] Output)
+        protected override OperationVerdict GetProcessVerdict(int ReturnCode, string[] Output)
         {
-            return Package.Manager.GetUpdateOperationVeredict(Package, Options, ReturnCode, Output);
+            return Package.Manager.GetUpdateOperationVerdict(Package, Options, ReturnCode, Output);
         }
 
         protected override async Task<AfterFinshAction> HandleFailure()
@@ -418,9 +418,9 @@ namespace ModernWindow.PackageEngine.Operations
             };
         }
 
-        protected override OperationVeredict GetProcessVeredict(int ReturnCode, string[] Output)
+        protected override OperationVerdict GetProcessVerdict(int ReturnCode, string[] Output)
         {
-            return Package.Manager.GetUninstallOperationVeredict(Package, Options, ReturnCode, Output);
+            return Package.Manager.GetUninstallOperationVerdict(Package, Options, ReturnCode, Output);
         }
 
         protected override async Task<AfterFinshAction> HandleFailure()

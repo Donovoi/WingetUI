@@ -400,43 +400,43 @@ public class Scoop : PackageManagerWithSources
         }
     }
 
-    public override OperationVeredict GetUninstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+    public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
     {
         string output_string = string.Join("\n", Output);
         if ((output_string.Contains("Try again with the --global (or -g) flag instead") && package.Scope == PackageScope.Local))
         {
             package.Scope = PackageScope.Global;
-            return OperationVeredict.AutoRetry;
+            return OperationVerdict.AutoRetry;
         }
         if (output_string.Contains("requires admin rights") || output_string.Contains("requires administrator rights") || output_string.Contains("you need admin rights to install global apps"))
         {
             options.RunAsAdministrator = true;
-            return OperationVeredict.AutoRetry;
+            return OperationVerdict.AutoRetry;
         }
         if (output_string.Contains("was uninstalled"))
-            return OperationVeredict.Succeeded;
-        return OperationVeredict.Failed;
+            return OperationVerdict.Succeeded;
+        return OperationVerdict.Failed;
     }
-    public override OperationVeredict GetInstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+    public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
     {
         string output_string = string.Join("\n", Output);
         if ((output_string.Contains("Try again with the --global (or -g) flag instead") && package.Scope == PackageScope.Local))
         {
             package.Scope = PackageScope.Global;
-            return OperationVeredict.AutoRetry;
+            return OperationVerdict.AutoRetry;
         }
         if (output_string.Contains("requires admin rights") || output_string.Contains("requires administrator rights") || output_string.Contains("you need admin rights to install global apps"))
         {
             options.RunAsAdministrator = true;
-            return OperationVeredict.AutoRetry;
+            return OperationVerdict.AutoRetry;
         }
         if (output_string.Contains("ERROR"))
-            return OperationVeredict.Failed;
-        return OperationVeredict.Succeeded;
+            return OperationVerdict.Failed;
+        return OperationVerdict.Succeeded;
     }
-    public override OperationVeredict GetUpdateOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+    public override OperationVerdict GetUpdateOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
     {
-        return GetInstallOperationVeredict(package, options, ReturnCode, Output);
+        return GetInstallOperationVerdict(package, options, ReturnCode, Output);
     }
 
     public override string[] GetUninstallParameters(Package package, InstallationOptions options)
@@ -637,13 +637,13 @@ public class Scoop : PackageManagerWithSources
         return new string[] { "bucket", "rm", source.Name };
     }
 
-    public override OperationVeredict GetAddSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+    public override OperationVerdict GetAddSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
     {
-        return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+        return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
     }
 
-    public override OperationVeredict GetRemoveSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+    public override OperationVerdict GetRemoveSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
     {
-        return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+        return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
     }
 }

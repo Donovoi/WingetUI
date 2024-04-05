@@ -18,8 +18,8 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <AssemblyName>WingetUI</AssemblyName>
     <Nullable>annotations</Nullable>
-	<FileVersion>3.0.1.0</FileVersion>
-	<InformationalVersion>3.1.0-beta</InformationalVersion>
+	<FileVersion>9.9.9.9</FileVersion>
+	<InformationalVersion>99999999</InformationalVersion>
 	<Product>UniGetUI</Product>
 	<Copyright>2024, Martí Climent</Copyright>
   </PropertyGroup>
@@ -36,6 +36,11 @@
     <None Remove="PackageEngine\Managers\WinGetClasses\**" />
     <Page Remove="Intereface\**" />
     <Page Remove="PackageEngine\Managers\WinGetClasses\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gsudo\gsudo.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Languages\Contributors.list" />

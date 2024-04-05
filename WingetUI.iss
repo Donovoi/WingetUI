@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WingetUI"
-#define MyAppVersion "3.1.0-beta"
+#define MyAppVersion "99999999"
 #define MyAppPublisher "Martí Climent"
 #define MyAppURL "https://github.com/marticliment/WingetUI"
 #define MyAppExeName "WingetUI.exe"
@@ -23,7 +23,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL='https://www.marticliment.com/'
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-VersionInfoVersion=3.0.1.0
+VersionInfoVersion=9.9.9.9
 DefaultDirName="{autopf64}\WingetUI"
 ArchitecturesInstallIn64BitMode=x64 arm64
 ArchitecturesAllowed=x64 arm64

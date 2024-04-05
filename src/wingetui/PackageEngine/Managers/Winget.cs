@@ -387,17 +387,17 @@ namespace ModernWindow.PackageEngine.Managers
             return parameters.ToArray();
         }
 
-        public override OperationVeredict GetInstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
             string output_string = string.Join("\n", Output);
 
             if (ReturnCode == -1978334967) // Use https://www.rapidtables.com/convert/number/hex-to-decimal.html for easy UInt(hex) to Int(dec) conversion
-                return OperationVeredict.Succeeded; // TODO: Needs restart
+                return OperationVerdict.Succeeded; // TODO: Needs restart
             else if (ReturnCode == -1978335215)
-                return OperationVeredict.Failed; // TODO: Needs skip checksum
+                return OperationVerdict.Failed; // TODO: Needs skip checksum
 
             if (output_string.Contains("No applicable upgrade found") || output_string.Contains("No newer package versions are available from the configured sources"))
-                return OperationVeredict.Succeeded;
+                return OperationVerdict.Succeeded;
 
             if(output_string.Contains("winget settings --enable InstallerHashOverride"))
             {
@@ -417,28 +417,28 @@ namespace ModernWindow.PackageEngine.Managers
                 };
                 p.Start();
                 p.WaitForExit();
-                return OperationVeredict.AutoRetry;
+                return OperationVerdict.AutoRetry;
             }
 
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
 
-        public override OperationVeredict GetUpdateOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUpdateOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            return GetInstallOperationVeredict(package, options, ReturnCode, Output);
+            return GetInstallOperationVerdict(package, options, ReturnCode, Output);
         }
 
-        public override OperationVeredict GetUninstallOperationVeredict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
+        public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
             string output_string = string.Join("\n", Output);
 
             if (output_string.Contains("1603") || output_string.Contains("0x80070005") || output_string.Contains("Access is denied"))
             {
                 options.RunAsAdministrator = true;
-                return OperationVeredict.AutoRetry;
+                return OperationVerdict.AutoRetry;
             }
 
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
 
 
@@ -745,14 +745,14 @@ namespace ModernWindow.PackageEngine.Managers
             return new string[] { "source", "remove", "--name", source.Name, "--disable-interactivity" };
         }
 
-        public override OperationVeredict GetAddSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+        public override OperationVerdict GetAddSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
         {
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
 
-        public override OperationVeredict GetRemoveSourceOperationVeredict(ManagerSource source, int ReturnCode, string[] Output)
+        public override OperationVerdict GetRemoveSourceOperationVerdict(ManagerSource source, int ReturnCode, string[] Output)
         {
-            return ReturnCode == 0 ? OperationVeredict.Succeeded : OperationVeredict.Failed;
+            return ReturnCode == 0 ? OperationVerdict.Succeeded : OperationVerdict.Failed;
         }
     }
 
