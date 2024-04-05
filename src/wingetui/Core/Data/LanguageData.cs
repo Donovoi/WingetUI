@@ -35,7 +35,7 @@ namespace ModernWindow.Core.Data
 
         public LanguageEngine()
         {
-            string LangName = AppTools.GetSettingsValue_Static("PreferredLanguage");
+            var LangName = AppTools.GetSettingsValue_Static("PreferredLanguage");
             if (LangName == "default" || LangName == "")
             {
                 LangName = System.Globalization.CultureInfo.CurrentCulture.ToString().Replace("-", "_");
@@ -65,7 +65,7 @@ namespace ModernWindow.Core.Data
             try
             {
                 Dictionary<string, string> LangDict = new();
-                string LangFileToLoad = Path.Join(CoreData.WingetUICacheDirectory_Lang, "lang_" + LangKey + ".json");
+                var LangFileToLoad = Path.Join(CoreData.WingetUICacheDirectory_Lang, "lang_" + LangKey + ".json");
                 AppTools.Log(LangFileToLoad);
 
                 if (!File.Exists(LangFileToLoad) || AppTools.GetSettings_Static("DisableLangAutoUpdater"))
@@ -101,7 +101,7 @@ namespace ModernWindow.Core.Data
                 Uri NewFile = new("https://raw.githubusercontent.com/marticliment/WingetUI/main/src/wingetui/Assets/Languages/" + "lang_" + LangKey + ".json");
 
                 HttpClient client = new();
-                string fileContents = await client.GetStringAsync(NewFile);
+                var fileContents = await client.GetStringAsync(NewFile);
 
                 if (!Directory.Exists(CoreData.WingetUICacheDirectory_Lang))
                     Directory.CreateDirectory(CoreData.WingetUICacheDirectory_Lang);

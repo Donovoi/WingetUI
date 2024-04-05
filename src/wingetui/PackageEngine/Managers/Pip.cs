@@ -23,7 +23,7 @@ namespace ModernWindow.PackageEngine.Managers
         {
             List<Package> Packages = new();
 
-            string path = await Tools.Which("parse_pip_search");
+            var path = await Tools.Which("parse_pip_search");
             if (!File.Exists(path))
             {
                 Process proc = new()
@@ -58,8 +58,8 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
 
             string line;
-            bool DashesPassed = false;
-            string output = "";
+            var DashesPassed = false;
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -70,11 +70,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = line.Split('|');
+                    var elements = line.Split('|');
                     if (elements.Length < 2)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
                     if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                         continue;
 
@@ -105,9 +105,9 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
 
             string line;
-            bool DashesPassed = false;
+            var DashesPassed = false;
             List<UpgradablePackage> Packages = new();
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -118,11 +118,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 3)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
                     if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                         continue;
 
@@ -154,9 +154,9 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
 
             string line;
-            bool DashesPassed = false;
+            var DashesPassed = false;
             List<Package> Packages = new();
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -167,11 +167,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 2)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
                     if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                         continue;
 
@@ -185,7 +185,7 @@ namespace ModernWindow.PackageEngine.Managers
 
         public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            string output_string = string.Join("\n", Output);
+            var output_string = string.Join("\n", Output);
 
             if (ReturnCode == 0)
                 return OperationVerdict.Succeeded;
@@ -209,13 +209,13 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
-            string[] parameters = GetUpdateParameters(package, options);
+            var parameters = GetUpdateParameters(package, options);
             parameters[0] = Properties.InstallVerb;
             return parameters;
         }
         public override string[] GetUpdateParameters(Package package, InstallationOptions options)
         {
-            List<string> parameters = GetUninstallParameters(package, options).ToList();
+            var parameters = GetUninstallParameters(package, options).ToList();
             parameters[0] = Properties.UpdateVerb;
             parameters.Remove("--yes");
 
@@ -256,7 +256,7 @@ namespace ModernWindow.PackageEngine.Managers
             HttpClient client = new();
             JsonString = await client.GetStringAsync($"https://pypi.org/pypi/{package.Id}/json");
 
-            JsonObject RawInfo = JsonObject.Parse(JsonString) as JsonObject;
+            var RawInfo = JsonObject.Parse(JsonString) as JsonObject;
 
             try
             {
@@ -426,8 +426,8 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
 
             string line;
-            string[] result = new string[0];
-            string output = "";
+            var result = new string[0];
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";

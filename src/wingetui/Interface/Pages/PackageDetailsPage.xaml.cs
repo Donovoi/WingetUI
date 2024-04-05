@@ -77,7 +77,7 @@ namespace ModernWindow.Interface.Dialogs
             SourceNameTextBlock.Text = package.SourceAsString;
 
 
-            string LoadingString = Tools.Translate("Loading...");
+            var LoadingString = Tools.Translate("Loading...");
             LoadingIndicator.Visibility = Visibility.Visible;
 
 
@@ -105,7 +105,7 @@ namespace ModernWindow.Interface.Dialogs
                     PackageHasScreenshots = true;
                     IconsExtraBanner.Visibility = Visibility.Visible;
                     ScreenshotsCarroussel.Items.Clear();
-                    foreach (string image in CoreData.IconDatabaseData[Package.GetIconId()].images)
+                    foreach (var image in CoreData.IconDatabaseData[Package.GetIconId()].images)
                         ScreenshotsCarroussel.Items.Add(new Image() { Source = new BitmapImage(new Uri(image)) });
                 }
             }
@@ -118,12 +118,12 @@ namespace ModernWindow.Interface.Dialogs
         {
             LoadingIndicator.Visibility = Visibility.Visible;
 
-            string NotFound = Tools.Translate("Not available");
+            var NotFound = Tools.Translate("Not available");
             Uri InvalidUri = new("about:blank");
             Info = await Package.Manager.GetPackageDetails(Package);
             AppTools.Log("Received info " + Info);
 
-            string command = "";
+            var command = "";
 
             switch (FutureOperation)
             {
@@ -188,7 +188,7 @@ namespace ModernWindow.Interface.Dialogs
             ReleaseNotesUrlButton.NavigateUri = Info.ReleaseNotesUrl != null ? Info.ReleaseNotesUrl : InvalidUri;
 
             ShowableTags.Clear();
-            foreach (string tag in Info.Tags)
+            foreach (var tag in Info.Tags)
                 ShowableTags.Add(new TextBlock() { Text = tag });
         }
 
@@ -224,23 +224,23 @@ namespace ModernWindow.Interface.Dialogs
 
                 ErrorOutput.Text = "";
                 FileSavePicker savePicker = new();
-                MainWindow window = Tools.App.MainWindow;
-                IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                var window = Tools.App.MainWindow;
+                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
                 WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hWnd);
                 savePicker.SuggestedStartLocation = PickerLocationId.Downloads;
                 savePicker.SuggestedFileName = Package.Id + " installer." + Info.InstallerUrl.ToString().Split('.')[^1];
                 if (Info.InstallerUrl.ToString().Split('.')[^1] == "nupkg")
                     savePicker.FileTypeChoices.Add("Compressed Manifest File", new System.Collections.Generic.List<string>() { ".zip" });
                 savePicker.FileTypeChoices.Add("Default", new System.Collections.Generic.List<string>() { "." + Info.InstallerUrl.ToString().Split('.')[^1] });
-                StorageFile file = await savePicker.PickSaveFileAsync();
+                var file = await savePicker.PickSaveFileAsync();
                 if (file != null)
                 {
                     DownloadInstallerButton.Content = Tools.Translate("Downloading");
                     DownloadInstallerButtonProgress.Visibility = Visibility.Visible;
                     AppTools.Log(file.Path.ToString());
                     using HttpClient httpClient = new();
-                    await using Stream s = await httpClient.GetStreamAsync(Info.InstallerUrl);
-                    await using FileStream fs = File.OpenWrite(file.Path.ToString());
+                    await using var s = await httpClient.GetStreamAsync(Info.InstallerUrl);
+                    await using var fs = File.OpenWrite(file.Path.ToString());
                     await s.CopyToAsync(fs);
                     fs.Dispose();
                     DownloadInstallerButtonProgress.Visibility = Visibility.Collapsed;

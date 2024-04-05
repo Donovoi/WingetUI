@@ -38,8 +38,8 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
             string line;
             List<Package> Packages = new();
-            bool DashesPassed = false;
-            string output = "";
+            var DashesPassed = false;
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -50,7 +50,7 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length >= 2)
                         Packages.Add(new Package(Tools.FormatAsName(elements[0]), elements[0], elements[1], MainSource, this, PackageScope.Global));
                     // Dotnet tool packages are installed globally by default, hence the Global flag
@@ -67,7 +67,7 @@ namespace ModernWindow.PackageEngine.Managers
 
         protected override async Task<UpgradablePackage[]> GetAvailableUpdates_UnSafe()
         {
-            string path = await Tools.Which("dotnet-tools-outdated.exe");
+            var path = await Tools.Which("dotnet-tools-outdated.exe");
             if (!File.Exists(path))
             {
                 Process proc = new()
@@ -102,9 +102,9 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
 
             string line;
-            bool DashesPassed = false;
+            var DashesPassed = false;
             List<UpgradablePackage> Packages = new();
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -115,11 +115,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 3)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
                     if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                         continue;
 
@@ -151,7 +151,7 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
 
             string line;
-            bool DashesPassed = false;
+            var DashesPassed = false;
             List<Package> Packages = new();
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
@@ -162,11 +162,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 2)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
                     if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                         continue;
 
@@ -191,7 +191,7 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
 
             DashesPassed = false;
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -202,11 +202,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 2)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
                     if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                         continue;
 
@@ -236,13 +236,13 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
-            string[] parameters = GetUpdateParameters(package, options);
+            var parameters = GetUpdateParameters(package, options);
             parameters[0] = Properties.InstallVerb;
             return parameters;
         }
         public override string[] GetUpdateParameters(Package package, InstallationOptions options)
         {
-            List<string> parameters = GetUninstallParameters(package, options).ToList();
+            var parameters = GetUninstallParameters(package, options).ToList();
             parameters[0] = Properties.UpdateVerb;
 
             if (options.Architecture == Architecture.X86)
@@ -284,11 +284,11 @@ namespace ModernWindow.PackageEngine.Managers
             try
             {
                 details.ManifestUrl = new Uri("https://www.nuget.org/packages/" + package.Id);
-                string url = $"http://www.nuget.org/api/v2/Packages(Id='{package.Id}',Version='')";
+                var url = $"http://www.nuget.org/api/v2/Packages(Id='{package.Id}',Version='')";
 
                 using (HttpClient client = new())
                 {
-                    string apiContents = await client.GetStringAsync(url);
+                    var apiContents = await client.GetStringAsync(url);
 
                     details.InstallerUrl = new Uri($"https://globalcdn.nuget.org/packages/{package.Id}.{package.Version}.nupkg");
                     details.InstallerType = Tools.Translate("NuPkg (zipped manifest)");

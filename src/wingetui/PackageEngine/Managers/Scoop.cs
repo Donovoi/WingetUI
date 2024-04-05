@@ -24,7 +24,7 @@ public class Scoop : PackageManagerWithSources
     {
         List<Package> Packages = new();
 
-        string path = await Tools.Which("scoop-search.exe");
+        var path = await Tools.Which("scoop-search.exe");
         if (!File.Exists(path))
         {
             Process proc = new()
@@ -59,23 +59,23 @@ public class Scoop : PackageManagerWithSources
         p.Start();
 
         string line;
-        ManagerSource source = GetMainSource();
-        string output = "";
+        var source = GetMainSource();
+        var output = "";
         while ((line = await p.StandardOutput.ReadLineAsync()) != null)
         {
             output += line + "\n";
             if (line.StartsWith("'"))
             {
-                string sourceName = line.Split(" ")[0].Replace("'", "");
+                var sourceName = line.Split(" ")[0].Replace("'", "");
                 source = SourceFactory.GetSourceOrDefault(sourceName);
             }
             else if (line.Trim() != "")
             {
-                string[] elements = line.Trim().Split(" ");
+                var elements = line.Trim().Split(" ");
                 if (elements.Length < 2)
                     continue;
 
-                for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                 if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                     continue;
@@ -91,7 +91,7 @@ public class Scoop : PackageManagerWithSources
     protected override async Task<UpgradablePackage[]> GetAvailableUpdates_UnSafe()
     {
         Dictionary<string, Package> InstalledPackages = new();
-        foreach (Package InstalledPackage in await GetInstalledPackages())
+        foreach (var InstalledPackage in await GetInstalledPackages())
         {
             if (!InstalledPackages.ContainsKey(InstalledPackage.Id + "." + InstalledPackage.Version))
                 InstalledPackages.Add(InstalledPackage.Id + "." + InstalledPackage.Version, InstalledPackage);
@@ -116,8 +116,8 @@ public class Scoop : PackageManagerWithSources
         p.Start();
 
         string line;
-        bool DashesPassed = false;
-        string output = "";
+        var DashesPassed = false;
+        var output = "";
         while ((line = await p.StandardOutput.ReadLineAsync()) != null)
         {
             output += line + "\n";
@@ -128,11 +128,11 @@ public class Scoop : PackageManagerWithSources
             }
             else if (line.Trim() != "")
             {
-                string[] elements = Regex.Replace(line, " {2,}", " ").Trim().Split(" ");
+                var elements = Regex.Replace(line, " {2,}", " ").Trim().Split(" ");
                 if (elements.Length < 3)
                     continue;
 
-                for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                 if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                     continue;
@@ -172,8 +172,8 @@ public class Scoop : PackageManagerWithSources
         p.Start();
 
         string line;
-        bool DashesPassed = false;
-        string output = "";
+        var DashesPassed = false;
+        var output = "";
         while ((line = await p.StandardOutput.ReadLineAsync()) != null)
         {
             output += line + "\n";
@@ -184,16 +184,16 @@ public class Scoop : PackageManagerWithSources
             }
             else if (line.Trim() != "")
             {
-                string[] elements = Regex.Replace(line, " {2,}", " ").Trim().Split(" ");
+                var elements = Regex.Replace(line, " {2,}", " ").Trim().Split(" ");
                 if (elements.Length < 3)
                     continue;
 
-                for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                 if (FALSE_PACKAGE_IDS.Contains(elements[0]) || FALSE_PACKAGE_VERSIONS.Contains(elements[1]))
                     continue;
 
-                PackageScope scope = PackageScope.User;
+                var scope = PackageScope.User;
                 if (line.Contains("Global install"))
                     scope = PackageScope.Global;
 
@@ -237,16 +237,16 @@ public class Scoop : PackageManagerWithSources
         };
 
         p.Start();
-        string JsonString = await p.StandardOutput.ReadToEndAsync();
+        var JsonString = await p.StandardOutput.ReadToEndAsync();
 
-        JsonObject RawInfo = JsonObject.Parse(JsonString) as JsonObject;
+        var RawInfo = JsonObject.Parse(JsonString) as JsonObject;
 
         try
         {
             if (RawInfo.ContainsKey("description") && (RawInfo["description"] is JsonArray))
             {
                 details.Description = "";
-                foreach (JsonNode note in RawInfo["description"] as JsonArray)
+                foreach (var note in RawInfo["description"] as JsonArray)
                     details.Description += note.ToString() + "\n";
                 details.Description = details.Description.Replace("\n\n", "\n").Trim();
             }
@@ -282,7 +282,7 @@ public class Scoop : PackageManagerWithSources
             if (RawInfo.ContainsKey("notes") && (RawInfo["notes"] is JsonArray))
             {
                 details.ReleaseNotes = "";
-                foreach (JsonNode note in RawInfo["notes"] as JsonArray)
+                foreach (var note in RawInfo["notes"] as JsonArray)
                     details.ReleaseNotes += note.ToString() + "\n";
                 details.ReleaseNotes = details.ReleaseNotes.Replace("\n\n", "\n").Trim();
             }
@@ -322,7 +322,7 @@ public class Scoop : PackageManagerWithSources
             }
             else if (RawInfo.ContainsKey("architecture"))
             {
-                string FirstArch = (RawInfo["architecture"] as JsonObject).ElementAt(0).Key;
+                var FirstArch = (RawInfo["architecture"] as JsonObject).ElementAt(0).Key;
                 details.InstallerHash = RawInfo["architecture"][FirstArch]["hash"].ToString();
                 details.InstallerUrl = new Uri(RawInfo["architecture"][FirstArch]["url"].ToString());
             }
@@ -361,7 +361,7 @@ public class Scoop : PackageManagerWithSources
             process.Start();
 
             var _output = "";
-            bool DashesPassed = false;
+            var DashesPassed = false;
 
             string line;
             while ((line = await process.StandardOutput.ReadLineAsync()) != null)
@@ -376,7 +376,7 @@ public class Scoop : PackageManagerWithSources
                     }
                     else if (line.Trim() != "")
                     {
-                        string[] elements = Regex.Replace(line.Replace("AM", "").Replace("PM", "").Trim(), " {2,}", " ").Split(' ');
+                        var elements = Regex.Replace(line.Replace("AM", "").Replace("PM", "").Trim(), " {2,}", " ").Split(' ');
                         if (elements.Length >= 5)
                         {
                             if (!elements[1].Contains("https://"))
@@ -402,7 +402,7 @@ public class Scoop : PackageManagerWithSources
 
     public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
     {
-        string output_string = string.Join("\n", Output);
+        var output_string = string.Join("\n", Output);
         if ((output_string.Contains("Try again with the --global (or -g) flag instead") && package.Scope == PackageScope.Local))
         {
             package.Scope = PackageScope.Global;
@@ -419,7 +419,7 @@ public class Scoop : PackageManagerWithSources
     }
     public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
     {
-        string output_string = string.Join("\n", Output);
+        var output_string = string.Join("\n", Output);
         if ((output_string.Contains("Try again with the --global (or -g) flag instead") && package.Scope == PackageScope.Local))
         {
             package.Scope = PackageScope.Global;
@@ -459,13 +459,13 @@ public class Scoop : PackageManagerWithSources
     }
     public override string[] GetInstallParameters(Package package, InstallationOptions options)
     {
-        string[] parameters = GetUpdateParameters(package, options);
+        var parameters = GetUpdateParameters(package, options);
         parameters[0] = Properties.InstallVerb;
         return parameters;
     }
     public override string[] GetUpdateParameters(Package package, InstallationOptions options)
     {
-        List<string> parameters = GetUninstallParameters(package, options).ToList();
+        var parameters = GetUninstallParameters(package, options).ToList();
         parameters[0] = Properties.UpdateVerb;
 
         parameters.Remove("--purge");
@@ -585,7 +585,7 @@ public class Scoop : PackageManagerWithSources
         AppTools.Log("Starting scoop cleanup...");
         foreach(var command in new string[] { " cache rm *", " cleanup --all --cache", " cleanup --all --global --cache" })
         {
-            Process p = new Process()
+            var p = new Process()
             {
                 StartInfo = new ProcessStartInfo()
                 {

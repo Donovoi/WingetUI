@@ -48,7 +48,7 @@ namespace ModernWindow
             {
                 InitializeComponent();
 
-                string preferredTheme = AppTools.GetSettingsValue_Static("PreferredTheme");
+                var preferredTheme = AppTools.GetSettingsValue_Static("PreferredTheme");
                 if (preferredTheme == "dark")
                 {
                     RequestedTheme = ApplicationTheme.Dark;

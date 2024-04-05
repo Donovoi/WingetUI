@@ -95,7 +95,7 @@ namespace ModernWindow.Interface.Widgets
         {
             try
             {
-                string savedItem = Tools.GetSettingsValue(SettingName);
+                var savedItem = Tools.GetSettingsValue(SettingName);
                 _combobox.SelectedIndex = _elements.IndexOf(_inverted_val_ref[savedItem]);
             }
             catch

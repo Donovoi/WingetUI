@@ -34,16 +34,16 @@ namespace ModernWindow.Interface
 
             Dictionary<string, PackageManager> ManagerNameReference = new();
 
-            foreach (PackageManager Manager in Tools.App.PackageManagerList)
+            foreach (var Manager in Tools.App.PackageManagerList)
             {
                 ManagerNameReference.Add(Manager.Name.ToLower(), Manager);
             }
 
-            JsonObject IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
+            var IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
 
             IgnoredUpdatesList.Items.Clear();
 
-            foreach (KeyValuePair<string, JsonNode> keypair in IgnoredUpdatesJson)
+            foreach (var keypair in IgnoredUpdatesJson)
             {
                 PackageManager manager = Tools.App.Winget; // Manager by default
                 if (ManagerNameReference.ContainsKey(keypair.Key.Split("\\")[0]))
@@ -88,8 +88,8 @@ namespace ModernWindow.Interface
         }
         public async Task RemoveFromIgnoredUpdates()
         {
-            string IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
-            JsonObject IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
+            var IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
+            var IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
             if (IgnoredUpdatesJson.ContainsKey(IgnoredId))
             {
                 IgnoredUpdatesJson.Remove(IgnoredId);

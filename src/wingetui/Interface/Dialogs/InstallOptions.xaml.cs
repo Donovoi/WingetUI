@@ -49,7 +49,7 @@ namespace ModernWindow.Interface.Dialogs
 
 
             if (Package.Manager.Capabilities.SupportsCustomArchitectures)
-                foreach (Architecture arch in Package.Manager.Capabilities.SupportedCustomArchitectures)
+                foreach (var arch in Package.Manager.Capabilities.SupportedCustomArchitectures)
                 {
                     ArchitectureComboBox.Items.Add(CommonTranslations.ArchNames[arch]);
                     if (Options.Architecture == arch)
@@ -106,9 +106,9 @@ namespace ModernWindow.Interface.Dialogs
         {
             IgnoreUpdatesCheckbox.IsChecked = await Package.HasUpdatesIgnoredAsync();
 
-            string[] versions = await Package.Manager.GetPackageVersions(Package);
+            var versions = await Package.Manager.GetPackageVersions(Package);
 
-            foreach (string ver in versions)
+            foreach (var ver in versions)
             {
                 VersionComboBox.Items.Add(ver);
                 if (Options.Version == ver)
@@ -162,7 +162,7 @@ namespace ModernWindow.Interface.Dialogs
         private void SelectDir_Click(object sender, RoutedEventArgs e)
         {
             var openPicker = new Pickers.FolderPicker(Tools.App.MainWindow.GetWindowHandle());
-            string folder = openPicker.Show();
+            var folder = openPicker.Show();
             if (folder != String.Empty)
                 CustomInstallLocation.Text = folder;
         }

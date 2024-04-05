@@ -43,7 +43,7 @@ namespace ModernWindow.Interface.Pages.AboutPages
         public ThirdPartyLicenses()
         {
             this.InitializeComponent();
-            foreach (string license in LicenseData.LicenseNames.Keys)
+            foreach (var license in LicenseData.LicenseNames.Keys)
             {
                 Licenses.Add(new LibraryLicense()
                 {

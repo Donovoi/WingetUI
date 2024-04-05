@@ -219,7 +219,7 @@ namespace ModernWindow.PackageEngine
 
                 LiveOutputTextBlock.Blocks.Clear();
                 Paragraph p = new();
-                foreach (string line in ProcessOutput)
+                foreach (var line in ProcessOutput)
                 {
                     if (line.Contains("  | "))
                         p.Inlines.Add(new Run() { Text = line.Replace(" | ", "").Trim() + "\x0a" });
@@ -244,7 +244,7 @@ namespace ModernWindow.PackageEngine
             LiveOutputTextBlock.Blocks.Clear();
             Paragraph p = new();
             p.LineHeight = 4.8;
-            foreach (string line in ProcessOutput)
+            foreach (var line in ProcessOutput)
             {
                 if (Status != OperationStatus.Failed)
                 {
@@ -317,8 +317,8 @@ namespace ModernWindow.PackageEngine
         protected virtual async Task WaitForAvailability()
         {
             AddToQueue();
-            int currentIndex = -2;
-            int oldIndex = -1;
+            var currentIndex = -2;
+            var oldIndex = -1;
             while (currentIndex != 0)
             {
                 if (Status == OperationStatus.Cancelled)
@@ -351,7 +351,7 @@ namespace ModernWindow.PackageEngine
 
                 Status = OperationStatus.Running;
                 LineInfoText = Tools.Translate("Launching subprocess...");
-                string gsudoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gsudo.exe");
+                var gsudoPath = FindGSudoInPath();
 
                 ProcessStartInfo startInfo = new()
                 {
@@ -367,10 +367,11 @@ namespace ModernWindow.PackageEngine
                     StandardErrorEncoding = System.Text.Encoding.UTF8,
                     WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
                 };
-
                 Process = BuildProcessInstance(startInfo);
 
-                foreach (string infoLine in GenerateProcessLogHeader())
+
+
+                foreach (var infoLine in GenerateProcessLogHeader())
                     ProcessOutput.Add(infoLine);
 
                 ProcessOutput.Add("Process Executable     : " + Process.StartInfo.FileName);
@@ -393,7 +394,7 @@ namespace ModernWindow.PackageEngine
                         ProcessOutput[^1] = "    | " + line;
                 }
 
-                foreach (string errorLine in (await Process.StandardError.ReadToEndAsync()).Split('\n'))
+                foreach (var errorLine in (await Process.StandardError.ReadToEndAsync()).Split('\n'))
                     if (errorLine.Trim() != "")
                         ProcessOutput.Add("ERR | " + errorLine);
 
@@ -404,9 +405,9 @@ namespace ModernWindow.PackageEngine
 
 
 
-                AfterFinshAction postAction = AfterFinshAction.ManualClose;
+                var postAction = AfterFinshAction.ManualClose;
 
-                OperationVerdict OperationVerdict = GetProcessVerdict(Process.ExitCode, ProcessOutput.ToArray());
+                var OperationVerdict = GetProcessVerdict(Process.ExitCode, ProcessOutput.ToArray());
 
                 if (Status != OperationStatus.Cancelled)
                 {
@@ -545,6 +546,26 @@ namespace ModernWindow.PackageEngine
                     LayoutMode = WidgetLayout.Default;
             }
 
+        }
+        private static string FindGSudoInPath()
+        {
+            var gsudoPath = "gsudo.exe";
+
+            // Search for gsudo.exe in the directories specified by the PATH environment variable
+            var pathValue = Environment.GetEnvironmentVariable("PATH");
+            var pathDirectories = pathValue.Split(Path.PathSeparator);
+
+            foreach (var directory in pathDirectories)
+            {
+                var fullPath = Path.Combine(directory, gsudoPath);
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+
+            // gsudo.exe not found in PATH
+            return null;
         }
     }
 }

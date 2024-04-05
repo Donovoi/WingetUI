@@ -42,7 +42,7 @@ namespace ModernWindow.Interface.Widgets
             DefaultStyleKey = typeof(Announcer);
             BringIntoViewRequested += (s, e) => { LoadAnnouncements(); };
 
-            int i = 0;
+            var i = 0;
             PointerPressed += (s, e) => { if(i++ %3 != 0) LoadAnnouncements(); };
 
             SetText(binder.Translate("Fetching latest announcements, please wait..."));
@@ -53,17 +53,17 @@ namespace ModernWindow.Interface.Widgets
         {
             try
             {
-                Uri announcement_url = Url;
+                var announcement_url = Url;
                 if (retry)
                     announcement_url = new Uri(Url.ToString().Replace("https://", "http://"));
 
-                HttpResponseMessage response = await NetClient.GetAsync(announcement_url);
+                var response = await NetClient.GetAsync(announcement_url);
                 if (response.IsSuccessStatusCode)
                 {
-                    string title = response.Content.ToString().Split("////")[0].Trim().Trim('\n').Trim();
-                    string body = response.Content.ToString().Split("////")[1].Trim().Trim('\n').Trim();
-                    string linkId = response.Content.ToString().Split("////")[2].Trim().Trim('\n').Trim();
-                    string linkName = response.Content.ToString().Split("////")[3].Trim().Trim('\n').Trim();
+                    var title = response.Content.ToString().Split("////")[0].Trim().Trim('\n').Trim();
+                    var body = response.Content.ToString().Split("////")[1].Trim().Trim('\n').Trim();
+                    var linkId = response.Content.ToString().Split("////")[2].Trim().Trim('\n').Trim();
+                    var linkName = response.Content.ToString().Split("////")[3].Trim().Trim('\n').Trim();
                     Uri imageUrl = new(response.Content.ToString().Split("////")[4].Trim().Trim('\n').Trim());
                     SetText(title, body, linkId, linkName);
                     SetImage(imageUrl);
@@ -100,7 +100,7 @@ namespace ModernWindow.Interface.Widgets
             _textblock.Blocks.Add(paragraph);
 
             paragraph = new();
-            foreach (string line in body.Split("\n"))
+            foreach (var line in body.Split("\n"))
             {
                 paragraph.Inlines.Add(new Run() { Text = line + " " });
                 paragraph.Inlines.Add(new LineBreak());
@@ -117,7 +117,7 @@ namespace ModernWindow.Interface.Widgets
         public void SetText(string body)
         {
             Paragraph paragraph = new();
-            foreach (string line in body.Split("\n"))
+            foreach (var line in body.Split("\n"))
             {
                 paragraph.Inlines.Add(new Run() { Text = line });
                 paragraph.Inlines.Add(new LineBreak());

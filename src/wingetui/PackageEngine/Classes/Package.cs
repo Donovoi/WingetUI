@@ -214,7 +214,7 @@ namespace ModernWindow.PackageEngine.Classes
         /// <returns>a string with the package's normalized icon id</returns>
         public string GetIconId()
         {
-            string iconId = Id.ToLower();
+            var iconId = Id.ToLower();
             if (Manager == Tools.App.Winget)
                 iconId = string.Join('.', iconId.Split(".")[1..]);
             else if (Manager == Tools.App.Choco)
@@ -230,7 +230,7 @@ namespace ModernWindow.PackageEngine.Classes
         /// <returns>An always-valid URI object</returns>
         public Uri GetIconUrl()
         {
-            string iconId = GetIconId();
+            var iconId = GetIconId();
             if (CoreData.IconDatabaseData.ContainsKey(iconId))
                 if (CoreData.IconDatabaseData[iconId].icon != "")
                     return new Uri(CoreData.IconDatabaseData[iconId].icon);
@@ -244,9 +244,9 @@ namespace ModernWindow.PackageEngine.Classes
         /// <returns>A float value. Returns 0.0F if the version could not be parsed</returns>
         public float GetFloatVersion()
         {
-            string _ver = "";
-            bool _dotAdded = false;
-            foreach (char _char in Version)
+            var _ver = "";
+            var _dotAdded = false;
+            foreach (var _char in Version)
             {
                 if (char.IsDigit(_char))
                     _ver += _char;
@@ -259,7 +259,7 @@ namespace ModernWindow.PackageEngine.Classes
                     }
                 }
             }
-            float res = 0.0F;
+            var res = 0.0F;
             if (_ver != "" && _ver != ".")
                 try
                 {
@@ -279,8 +279,8 @@ namespace ModernWindow.PackageEngine.Classes
         {
             try
             {
-                string IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
-                JsonObject IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
+                var IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
+                var IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
                 if (IgnoredUpdatesJson.ContainsKey(IgnoredId))
                     IgnoredUpdatesJson.Remove(IgnoredId);
                 IgnoredUpdatesJson.Add(IgnoredId, version);
@@ -304,8 +304,8 @@ namespace ModernWindow.PackageEngine.Classes
             try
             {
 
-                string IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
-                JsonObject IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
+                var IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
+                var IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
                 if (IgnoredUpdatesJson.ContainsKey(IgnoredId))
                 {
                     IgnoredUpdatesJson.Remove(IgnoredId);
@@ -332,8 +332,8 @@ namespace ModernWindow.PackageEngine.Classes
         {
             try
             {
-                string IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
-                JsonObject IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
+                var IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
+                var IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
                 if (IgnoredUpdatesJson.ContainsKey(IgnoredId) && (IgnoredUpdatesJson[IgnoredId].ToString() == "*" || IgnoredUpdatesJson[IgnoredId].ToString() == Version))
                     return true;
                 else
@@ -357,8 +357,8 @@ namespace ModernWindow.PackageEngine.Classes
         {
             try 
             { 
-                string IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
-                JsonObject IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
+                var IgnoredId = $"{Manager.Properties.Name.ToLower()}\\{Id}";
+                var IgnoredUpdatesJson = JsonNode.Parse(await File.ReadAllTextAsync(CoreData.IgnoredUpdatesDatabaseFile)) as JsonObject;
                 if (IgnoredUpdatesJson.ContainsKey(IgnoredId))
                     return IgnoredUpdatesJson[IgnoredId].ToString();
                 else
@@ -465,9 +465,9 @@ namespace ModernWindow.PackageEngine.Classes
         /// <returns></returns>
         public float GetFloatNewVersion()
         {
-            string _ver = "";
-            bool _dotAdded = false;
-            foreach (char _char in NewVersion)
+            var _ver = "";
+            var _dotAdded = false;
+            foreach (var _char in NewVersion)
             {
                 if (char.IsDigit(_char))
                     _ver += _char;
@@ -480,7 +480,7 @@ namespace ModernWindow.PackageEngine.Classes
                     }
                 }
             }
-            float res = 0.0F;
+            var res = 0.0F;
             if (_ver != "" && _ver != ".")
                 try
                 {
@@ -499,7 +499,7 @@ namespace ModernWindow.PackageEngine.Classes
         /// <returns></returns>
         public bool NewVersionIsInstalled()
         {
-            foreach (Package package in Tools.App.MainWindow.NavigationPage.InstalledPage.Packages)
+            foreach (var package in Tools.App.MainWindow.NavigationPage.InstalledPage.Packages)
                 if (package.Manager == Manager && package.Id == Id && package.Version == NewVersion && package.Source.Name == Source.Name)
                     return true;
             return false;
@@ -757,7 +757,7 @@ namespace ModernWindow.PackageEngine.Classes
         /// <returns></returns>
         public override string ToString()
         {
-            string customparams = CustomParameters != null ? string.Join(",", CustomParameters) : "[]";
+            var customparams = CustomParameters != null ? string.Join(",", CustomParameters) : "[]";
             return $"<InstallationOptions: SkipHashCheck={SkipHashCheck};" +
                    $"InteractiveInstallation={InteractiveInstallation};" +
                    $"RunAsAdministrator={RunAsAdministrator};" +

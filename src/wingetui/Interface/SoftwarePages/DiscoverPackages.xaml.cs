@@ -68,7 +68,7 @@ namespace ModernWindow.Interface
                     AppTools.Log((e.OriginalSource as FrameworkElement).DataContext);
                     if ((e.OriginalSource as FrameworkElement).DataContext is TreeViewNode)
                     {
-                        TreeViewNode node = (e.OriginalSource as FrameworkElement).DataContext as TreeViewNode;
+                        var node = (e.OriginalSource as FrameworkElement).DataContext as TreeViewNode;
                         if (node == null)
                             return;
                         if (SourcesTreeView.SelectedNodes.Contains(node))
@@ -150,7 +150,7 @@ namespace ModernWindow.Interface
                 }
             };
 
-            int width = 250;
+            var width = 250;
             try
             {
                 width = int.Parse(Tools.GetSettingsValue("SidepanelWidthDiscoverPage"));
@@ -181,7 +181,7 @@ namespace ModernWindow.Interface
             if (!Initialized)
                 return;
 
-            ManagerSource source = package.Source;
+            var source = package.Source;
             if (!UsedManagers.Contains(source.Manager))
             {
                 UsedManagers.Add(source.Manager);
@@ -261,7 +261,7 @@ namespace ModernWindow.Interface
             if (LastCalledQuery.Trim() != QueryBlock.Text.Trim())
             {
                 LastCalledQuery = QueryBlock.Text.Trim();
-                string InitialQuery = QueryBlock.Text.Trim();
+                var InitialQuery = QueryBlock.Text.Trim();
 
                 await Task.Delay(250);
 
@@ -287,18 +287,18 @@ namespace ModernWindow.Interface
 
                 List<Task<Package[]>> tasks = new();
 
-                foreach (PackageManager manager in Tools.App.PackageManagerList)
+                foreach (var manager in Tools.App.PackageManagerList)
                 {
                     if (manager.IsEnabled() && manager.Status.Found)
                     {
-                        Task<Package[]> task = manager.FindPackages(QueryBlock.Text);
+                        var task = manager.FindPackages(QueryBlock.Text);
                         tasks.Add(task);
                     }
                 }
 
                 while (tasks.Count > 0)
                 {
-                    foreach (Task<Package[]> task in tasks.ToArray())
+                    foreach (var task in tasks.ToArray())
                     {
                         if (!task.IsCompleted)
                             await Task.Delay(100);
@@ -310,8 +310,8 @@ namespace ModernWindow.Interface
                         {
                             if (task.IsCompletedSuccessfully)
                             {
-                                int InitialCount = Packages.Count;
-                                foreach (Package package in task.Result)
+                                var InitialCount = Packages.Count;
+                                foreach (var package in task.Result)
                                 {
                                     Packages.Add(package);
                                     AddPackageToSourcesList(package);
@@ -353,7 +353,7 @@ namespace ModernWindow.Interface
 
             if (SourcesTreeView.SelectedNodes.Count > 0)
             {
-                foreach (TreeViewNode node in SourcesTreeView.SelectedNodes)
+                foreach (var node in SourcesTreeView.SelectedNodes)
                 {
                     if (NodesForSources.ContainsValue(node))
                         VisibleSources.Add(NodesForSources.First(x => x.Value == node).Key);
@@ -374,8 +374,8 @@ namespace ModernWindow.Interface
             if (IgnoreSpecialCharsCheckbox.IsChecked == true)
                 CharsFunc = (x) =>
                 {
-                    string temp_x = CaseFunc(x).Replace("-", "").Replace("_", "").Replace(" ", "").Replace("@", "").Replace("\t", "").Replace(".", "").Replace(",", "").Replace(":", "");
-                    foreach (KeyValuePair<char, string> entry in new Dictionary<char, string>
+                    var temp_x = CaseFunc(x).Replace("-", "").Replace("_", "").Replace(" ", "").Replace("@", "").Replace("\t", "").Replace(".", "").Replace(",", "").Replace(":", "");
+                    foreach (var entry in new Dictionary<char, string>
                         {
                             {'a', "àáäâ"},
                             {'e', "èéëê"},
@@ -387,7 +387,7 @@ namespace ModernWindow.Interface
                             {'ñ', "n"},
                         })
                     {
-                        foreach (char InvalidChar in entry.Value)
+                        foreach (var InvalidChar in entry.Value)
                             x = x.Replace(InvalidChar, entry.Key);
                     }
                     return temp_x;
@@ -407,8 +407,8 @@ namespace ModernWindow.Interface
                 MatchingList = Packages.ToArray();
 
             FilteredPackages.BlockSorting = true;
-            int HiddenPackagesDueToSource = 0;
-            foreach (Package match in MatchingList)
+            var HiddenPackagesDueToSource = 0;
+            foreach (var match in MatchingList)
             {
                 if (VisibleManagers.Contains(match.Manager) || VisibleSources.Contains(match.Source))
                     FilteredPackages.Add(match);
@@ -532,7 +532,7 @@ namespace ModernWindow.Interface
                 { HelpButton,             Tools.Translate("Help") }
             };
 
-            foreach (AppBarButton toolButton in Labels.Keys)
+            foreach (var toolButton in Labels.Keys)
             {
                 toolButton.IsCompact = Labels[toolButton][0] == ' ';
                 if (toolButton.IsCompact)
@@ -555,7 +555,7 @@ namespace ModernWindow.Interface
                 { HelpButton,           "help" }
             };
 
-            foreach (AppBarButton toolButton in Icons.Keys)
+            foreach (var toolButton in Icons.Keys)
                 toolButton.Icon = new LocalIcon(Icons[toolButton]);
 
             PackageDetails.Click += (s, e) => { 
@@ -574,27 +574,27 @@ namespace ModernWindow.Interface
 
             InstallSelected.Click += (s, e) =>
             {
-                foreach (Package package in FilteredPackages) if (package.IsChecked)
+                foreach (var package in FilteredPackages) if (package.IsChecked)
                         Tools.AddOperationToList(new InstallPackageOperation(package));
             };
 
             InstallAsAdmin.Click += (s, e) =>
             {
-                foreach (Package package in FilteredPackages) if (package.IsChecked)
+                foreach (var package in FilteredPackages) if (package.IsChecked)
                         Tools.AddOperationToList(new InstallPackageOperation(package,
                             new InstallationOptions(package) { RunAsAdministrator = true }));
             };
 
             InstallSkipHash.Click += (s, e) =>
             {
-                foreach (Package package in FilteredPackages) if (package.IsChecked)
+                foreach (var package in FilteredPackages) if (package.IsChecked)
                         Tools.AddOperationToList(new InstallPackageOperation(package,
                             new InstallationOptions(package) { SkipHashCheck = true }));
             };
 
             InstallInteractive.Click += (s, e) =>
             {
-                foreach (Package package in FilteredPackages) if (package.IsChecked)
+                foreach (var package in FilteredPackages) if (package.IsChecked)
                         Tools.AddOperationToList(new InstallPackageOperation(package,
                             new InstallationOptions(package) { InteractiveInstallation = true }));
             };
@@ -681,14 +681,14 @@ namespace ModernWindow.Interface
 
         private void SelectAllItems()
         {
-            foreach (Package package in FilteredPackages)
+            foreach (var package in FilteredPackages)
                 package.IsChecked = true;
             AllSelected = true;
         }
 
         private void ClearItemSelection()
         {
-            foreach (Package package in FilteredPackages)
+            foreach (var package in FilteredPackages)
                 package.IsChecked = false;
             AllSelected = false;
         }

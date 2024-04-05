@@ -49,7 +49,7 @@ namespace ModernWindow.Interface.Widgets
 
         public void __apply_icon()
         {
-            string theme = "white";
+            var theme = "white";
             if (ActualTheme == ElementTheme.Light)
             {
                 theme = "black";

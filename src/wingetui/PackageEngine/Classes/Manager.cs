@@ -53,8 +53,8 @@ namespace ModernWindow.PackageEngine.Classes
                 {
                     (this as PackageManagerWithSources).KnownSources = (this as PackageManagerWithSources).GetKnownSources();
 
-                    Task<ManagerSource[]> SourcesTask = (this as PackageManagerWithSources).GetSources();
-                    Task winner = await Task.WhenAny(
+                    var SourcesTask = (this as PackageManagerWithSources).GetSources();
+                    var winner = await Task.WhenAny(
                         SourcesTask,
                         Task.Delay(10000));
                     if (winner == SourcesTask)
@@ -69,25 +69,25 @@ namespace ModernWindow.PackageEngine.Classes
                 }
                 ManagerReady = true;
 
-                string LogData = "\n▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄" +
-                                 "\n█▀▀▀▀▀▀▀▀▀▀▀▀▀ MANAGER LOADED ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀" +
-                                 "\n█ Name: " + Name +
-                                 "\n█ Enabled: " + IsEnabled().ToString() +
-                                    ((IsEnabled())? (
-                                 "\n█ Found: " + Status.Found.ToString() +
-                                    ((Status.Found)? (
-                                 "\n█ Fancye exe name: " + Properties.ExecutableFriendlyName +
-                                 "\n█ Executable path: " + Status.ExecutablePath +
-                                 "\n█ Call arguments: " + Properties.ExecutableCallArgs +
-                                 "\n█ Version: \n" + "█   " + Status.Version.Replace("\n", "\n█   "))
-                                    :
-                                 "\n█ THE MANAGER WAS NOT FOUND. PERHAPS IT IS NOT " + 
-                                 "\n█ INSTALLED OR IT HAS BEEN MISCONFIGURED "
-                                    ))
-                                    : 
-                                 "\n█ THE MANAGER IS DISABLED"
-                                    ) +
-                                 "\n▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n";
+                var LogData = "\n▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄" +
+                              "\n█▀▀▀▀▀▀▀▀▀▀▀▀▀ MANAGER LOADED ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀" +
+                              "\n█ Name: " + Name +
+                              "\n█ Enabled: " + IsEnabled().ToString() +
+                              ((IsEnabled())? (
+                                      "\n█ Found: " + Status.Found.ToString() +
+                                      ((Status.Found)? (
+                                              "\n█ Fancye exe name: " + Properties.ExecutableFriendlyName +
+                                              "\n█ Executable path: " + Status.ExecutablePath +
+                                              "\n█ Call arguments: " + Properties.ExecutableCallArgs +
+                                              "\n█ Version: \n" + "█   " + Status.Version.Replace("\n", "\n█   "))
+                                          :
+                                          "\n█ THE MANAGER WAS NOT FOUND. PERHAPS IT IS NOT " + 
+                                          "\n█ INSTALLED OR IT HAS BEEN MISCONFIGURED "
+                                      ))
+                                  : 
+                                  "\n█ THE MANAGER IS DISABLED"
+                              ) +
+                              "\n▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n";
                 
                 AppTools.Log(LogData);
             }
@@ -134,7 +134,7 @@ namespace ModernWindow.PackageEngine.Classes
             try
             {
                 var packages = await FindPackages_UnSafe(query);
-                for (int i = 0; i < packages.Length; i++)
+                for (var i = 0; i < packages.Length; i++)
                 {
                     if (!__known_available_packages.ContainsKey(packages[i].GetHash()))
                         __known_available_packages.Add(packages[i].GetHash(), packages[i]);
@@ -163,7 +163,7 @@ namespace ModernWindow.PackageEngine.Classes
             try
             {
                 var packages = await GetAvailableUpdates_UnSafe();
-                for (int i = 0; i < packages.Length; i++)
+                for (var i = 0; i < packages.Length; i++)
                 {
                     if (!__known_upgradable_packages.ContainsKey(packages[i].GetHash()))
                         __known_upgradable_packages.Add(packages[i].GetHash(), packages[i]);
@@ -191,7 +191,7 @@ namespace ModernWindow.PackageEngine.Classes
             try
             {
                 var packages = await GetInstalledPackages_UnSafe();
-                for (int i = 0; i < packages.Length; i++)
+                for (var i = 0; i < packages.Length; i++)
                 {
                     if (!__known_installed_packages.ContainsKey(packages[i].GetHash()))
                         __known_installed_packages.Add(packages[i].GetHash(), packages[i]);
@@ -383,9 +383,9 @@ namespace ModernWindow.PackageEngine.Classes
         {
             try
             {
-                ManagerSource[] sources = await GetSources_UnSafe();
+                var sources = await GetSources_UnSafe();
                 SourceFactory.Reset();
-                foreach (ManagerSource source in sources)
+                foreach (var source in sources)
                     SourceFactory.AddSource(source);
                 return sources;
             }

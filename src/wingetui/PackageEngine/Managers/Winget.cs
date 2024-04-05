@@ -107,7 +107,7 @@ namespace ModernWindow.PackageEngine.Managers
                 try
                 {
                     // Get the source for the catalog
-                    ManagerSource source = SourceFactory.GetSourceOrDefault(CatalogTaskPair.Key.Info.Name);
+                    var source = SourceFactory.GetSourceOrDefault(CatalogTaskPair.Key.Info.Name);
 
                     var FoundPackages = CatalogTaskPair.Value.Result;
                     foreach(var package in FoundPackages.Matches.ToArray())
@@ -136,7 +136,7 @@ namespace ModernWindow.PackageEngine.Managers
         {
             var Packages = new List<UpgradablePackage>();
 
-            Process p = new Process();
+            var p = new Process();
             p.StartInfo = new ProcessStartInfo()
             {
                 FileName = "powershell.exe",
@@ -178,18 +178,18 @@ namespace ModernWindow.PackageEngine.Managers
                 ");
 
             string line;
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (!line.StartsWith("#"))
                     continue; // The PowerShell script appends a '#' to the beginning of each line to identify the output
 
-                string[] elements = line.Split('\t');
+                var elements = line.Split('\t');
                 if (elements.Length < 5)
                     continue;
 
-                ManagerSource source = SourceFactory.GetSourceOrDefault(elements[4]);
+                var source = SourceFactory.GetSourceOrDefault(elements[4]);
 
                 Packages.Add(new UpgradablePackage(elements[0][1..], elements[1], elements[2], elements[3], source, this));
             }
@@ -205,7 +205,7 @@ namespace ModernWindow.PackageEngine.Managers
         {
             var Packages = new List<Package>();
 
-            Process p = new Process();
+            var p = new Process();
             p.StartInfo = new ProcessStartInfo()
             {
                 FileName = "powershell.exe",
@@ -244,14 +244,14 @@ namespace ModernWindow.PackageEngine.Managers
                 ");
 
             string line;
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (!line.StartsWith("#"))
                     continue; // The PowerShell script appends a '#' to the beginning of each line to identify the output
 
-                string[] elements = line.Split('\t');
+                var elements = line.Split('\t');
                 if (elements.Length < 4)
                     continue;
 
@@ -276,8 +276,8 @@ namespace ModernWindow.PackageEngine.Managers
             try
             {
                 // Check if source is android
-                bool AndroidValid = true;
-                foreach (char c in id)
+                var AndroidValid = true;
+                foreach (var c in id)
                     if (!"abcdefghijklmnopqrstuvwxyz.".Contains(c))
                     {
                         AndroidValid = false;
@@ -314,7 +314,7 @@ namespace ModernWindow.PackageEngine.Managers
 
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
-            List<string> parameters = GetUninstallParameters(package, options).ToList();
+            var parameters = GetUninstallParameters(package, options).ToList();
             parameters[0] = Properties.InstallVerb;
 
             parameters.Add("--accept-package-agreements");
@@ -350,9 +350,9 @@ namespace ModernWindow.PackageEngine.Managers
             else if (package.Name.Contains("32-bit") || package.Id.ToLower().Contains("x86"))
                 options.Architecture = Architecture.X86;
 
-            string[] parameters = GetInstallParameters(package, options);
+            var parameters = GetInstallParameters(package, options);
             parameters[0] = Properties.UpdateVerb;
-            List<string> p = parameters.ToList();
+            var p = parameters.ToList();
             p.Add("--force");
             p.Add("--include-unknown");
             parameters = p.ToArray();
@@ -389,7 +389,7 @@ namespace ModernWindow.PackageEngine.Managers
 
         public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            string output_string = string.Join("\n", Output);
+            var output_string = string.Join("\n", Output);
 
             if (ReturnCode == -1978334967) // Use https://www.rapidtables.com/convert/number/hex-to-decimal.html for easy UInt(hex) to Int(dec) conversion
                 return OperationVerdict.Succeeded; // TODO: Needs restart
@@ -402,7 +402,7 @@ namespace ModernWindow.PackageEngine.Managers
             if(output_string.Contains("winget settings --enable InstallerHashOverride"))
             {
                 AppTools.Log("Enabling skip hash ckeck for winget...");
-                Process p = new Process()
+                var p = new Process()
                 {
                     StartInfo = new ProcessStartInfo()
                     {
@@ -430,7 +430,7 @@ namespace ModernWindow.PackageEngine.Managers
 
         public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            string output_string = string.Join("\n", Output);
+            var output_string = string.Join("\n", Output);
 
             if (output_string.Contains("1603") || output_string.Contains("0x80070005") || output_string.Contains("Access is denied"))
             {
@@ -553,12 +553,12 @@ namespace ModernWindow.PackageEngine.Managers
                     output.Add(_line);
 
             // Parse the output
-            foreach (string __line in output)
+            foreach (var __line in output)
             {
                 try 
                 { 
                     AppTools.Log(__line);
-                    string line = __line.Trim();
+                    var line = __line.Trim();
                     if (line.Contains("Installer SHA256:"))
                         details.InstallerHash = line.Split(":")[1].Trim();
 

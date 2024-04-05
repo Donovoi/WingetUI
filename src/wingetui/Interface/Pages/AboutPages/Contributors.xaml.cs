@@ -40,7 +40,7 @@ namespace ModernWindow.Interface.Pages.AboutPages
         public Contributors()
         {
             this.InitializeComponent();
-            foreach (string contributor in ContributorsData.Contributors)
+            foreach (var contributor in ContributorsData.Contributors)
             {
                 Person person = new()
                 {

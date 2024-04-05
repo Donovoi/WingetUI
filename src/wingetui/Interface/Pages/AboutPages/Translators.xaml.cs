@@ -31,19 +31,19 @@ namespace ModernWindow.Interface.Pages.AboutPages
         public Translators()
         {
             this.InitializeComponent();
-            JsonObject TranslatorsInfo = JsonNode.Parse(LanguageData.TranslatorsJSON).AsObject();
+            var TranslatorsInfo = JsonNode.Parse(LanguageData.TranslatorsJSON).AsObject();
 
 
-            foreach (KeyValuePair<string, JsonNode> langKey in TranslatorsInfo)
+            foreach (var langKey in TranslatorsInfo)
             {
                 if (!LanguageData.LanguageList.ContainsKey(langKey.Key))
                 {
                     AppTools.Log($"Language {langKey.Key} not in list, maybe has not been added yet?");
                     continue;
                 }
-                JsonArray TranslatorsForLang = langKey.Value.AsArray();
-                bool LangShown = false;
-                foreach (JsonNode translator in TranslatorsForLang)
+                var TranslatorsForLang = langKey.Value.AsArray();
+                var LangShown = false;
+                foreach (var translator in TranslatorsForLang)
                 {
                     Uri? url = null;
                     if (translator["link"].ToString() != "")

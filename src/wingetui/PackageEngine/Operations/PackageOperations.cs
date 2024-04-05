@@ -68,8 +68,8 @@ namespace ModernWindow.PackageEngine.Operations
             Package.SetTag(PackageTag.OnQueue);
 
             AddToQueue();
-            int currentIndex = -2;
-            int oldIndex = -1;
+            var currentIndex = -2;
+            var oldIndex = -1;
             while (currentIndex != 0)
             {
                 if (Status == OperationStatus.Cancelled)
@@ -165,12 +165,12 @@ namespace ModernWindow.PackageEngine.Operations
             dialog.Resources["ContentDialogMaxHeight"] = 1000;
             dialog.Title = Tools.Translate("{package} installation failed").Replace("{package}", Package.Name);
 
-            StackPanel panel = new StackPanel() { Spacing = 16 };
+            var panel = new StackPanel() { Spacing = 16 };
             panel.Children.Add(new TextBlock() { TextWrapping = TextWrapping.WrapWholeWords, Text = Tools.Translate("{package} could not be installed").Replace("{package}", Package.Name) + ". " + Tools.Translate("Please see the Command-line Output or refer to the Operation History for further information about the issue.") });
 
-            Expander expander = new Expander() { CornerRadius = new CornerRadius(8) };
+            var expander = new Expander() { CornerRadius = new CornerRadius(8) };
 
-            StackPanel HeaderPanel = new StackPanel() { Orientation = Orientation.Horizontal, Spacing = 8 };
+            var HeaderPanel = new StackPanel() { Orientation = Orientation.Horizontal, Spacing = 8 };
             HeaderPanel.Children.Add(new LocalIcon("console") { VerticalAlignment = VerticalAlignment.Center, Height = 24, Width = 24, HorizontalAlignment = HorizontalAlignment.Left });
             HeaderPanel.Children.Add(new TextBlock() { Text = Tools.Translate("Command-line Output"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
 
@@ -178,10 +178,10 @@ namespace ModernWindow.PackageEngine.Operations
             expander.HorizontalAlignment = HorizontalAlignment.Stretch;
             panel.Children.Add(expander);
 
-            RichTextBlock output = new RichTextBlock() { FontFamily = new FontFamily("Consolas"), TextWrapping = TextWrapping.Wrap };
-            ScrollViewer sv = new ScrollViewer();
+            var output = new RichTextBlock() { FontFamily = new FontFamily("Consolas"), TextWrapping = TextWrapping.Wrap };
+            var sv = new ScrollViewer();
             sv.MaxHeight = 500;
-            Paragraph par = new Paragraph();
+            var par = new Paragraph();
             foreach(var line in ProcessOutput)
                 par.Inlines.Add(new Run() { Text = line + "\x0a" });
             output.Blocks.Add(par);
@@ -194,7 +194,7 @@ namespace ModernWindow.PackageEngine.Operations
             dialog.CloseButtonText = Tools.Translate("Close");
             dialog.DefaultButton = ContentDialogButton.Primary;
 
-            ContentDialogResult result = await Tools.App.MainWindow.ShowDialogAsync(dialog);
+            var result = await Tools.App.MainWindow.ShowDialogAsync(dialog);
 
             if (result == ContentDialogResult.Primary)
                 return AfterFinshAction.Retry;
@@ -305,12 +305,12 @@ namespace ModernWindow.PackageEngine.Operations
             dialog.Resources["ContentDialogMaxHeight"] = 1000;
             dialog.Title = Tools.Translate("{package} update failed").Replace("{package}", Package.Name);
 
-            StackPanel panel = new StackPanel() { Spacing = 16 };
+            var panel = new StackPanel() { Spacing = 16 };
             panel.Children.Add(new TextBlock() { TextWrapping = TextWrapping.WrapWholeWords, Text = Tools.Translate("{package} could not be updated").Replace("{package}", Package.Name) + ". " + Tools.Translate("Please see the Command-line Output or refer to the Operation History for further information about the issue.") });
 
-            Expander expander = new Expander() { CornerRadius = new CornerRadius(8) };
+            var expander = new Expander() { CornerRadius = new CornerRadius(8) };
 
-            StackPanel HeaderPanel = new StackPanel() { Orientation = Orientation.Horizontal, Spacing = 8 };
+            var HeaderPanel = new StackPanel() { Orientation = Orientation.Horizontal, Spacing = 8 };
             HeaderPanel.Children.Add(new LocalIcon("console") { VerticalAlignment = VerticalAlignment.Center, Height = 24, Width = 24, HorizontalAlignment = HorizontalAlignment.Left });
             HeaderPanel.Children.Add(new TextBlock() { Text = Tools.Translate("Command-line Output"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
 
@@ -318,10 +318,10 @@ namespace ModernWindow.PackageEngine.Operations
             expander.HorizontalAlignment = HorizontalAlignment.Stretch;
             panel.Children.Add(expander);
 
-            RichTextBlock output = new RichTextBlock() { FontFamily = new FontFamily("Consolas"), TextWrapping = TextWrapping.Wrap };
-            ScrollViewer sv = new ScrollViewer();
+            var output = new RichTextBlock() { FontFamily = new FontFamily("Consolas"), TextWrapping = TextWrapping.Wrap };
+            var sv = new ScrollViewer();
             sv.MaxHeight = 500;
-            Paragraph par = new Paragraph();
+            var par = new Paragraph();
             foreach (var line in ProcessOutput)
                 par.Inlines.Add(new Run() { Text = line + "\x0a" });
             output.Blocks.Add(par);
@@ -334,7 +334,7 @@ namespace ModernWindow.PackageEngine.Operations
             dialog.CloseButtonText = Tools.Translate("Close");
             dialog.DefaultButton = ContentDialogButton.Primary;
 
-            ContentDialogResult result = await Tools.App.MainWindow.ShowDialogAsync(dialog);
+            var result = await Tools.App.MainWindow.ShowDialogAsync(dialog);
 
             if (result == ContentDialogResult.Primary)
                 return AfterFinshAction.Retry;
@@ -449,12 +449,12 @@ namespace ModernWindow.PackageEngine.Operations
             dialog.Resources["ContentDialogMaxHeight"] = 1000;
             dialog.Title = Tools.Translate("{package} uninstall failed").Replace("{package}", Package.Name);
 
-            StackPanel panel = new StackPanel() { Spacing = 16 };
+            var panel = new StackPanel() { Spacing = 16 };
             panel.Children.Add(new TextBlock() { TextWrapping = TextWrapping.WrapWholeWords, Text = Tools.Translate("{package} could not be uninstalled").Replace("{package}", Package.Name) + ". " + Tools.Translate("Please see the Command-line Output or refer to the Operation History for further information about the issue.") });
 
-            Expander expander = new Expander() { CornerRadius = new CornerRadius(8) };
+            var expander = new Expander() { CornerRadius = new CornerRadius(8) };
 
-            StackPanel HeaderPanel = new StackPanel() { Orientation = Orientation.Horizontal, Spacing = 8 };
+            var HeaderPanel = new StackPanel() { Orientation = Orientation.Horizontal, Spacing = 8 };
             HeaderPanel.Children.Add(new LocalIcon("console") { VerticalAlignment = VerticalAlignment.Center, Height = 24, Width = 24, HorizontalAlignment = HorizontalAlignment.Left });
             HeaderPanel.Children.Add(new TextBlock() { Text = Tools.Translate("Command-line Output"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
 
@@ -462,10 +462,10 @@ namespace ModernWindow.PackageEngine.Operations
             expander.HorizontalAlignment = HorizontalAlignment.Stretch;
             panel.Children.Add(expander);
 
-            RichTextBlock output = new RichTextBlock() { FontFamily = new FontFamily("Consolas"), TextWrapping = TextWrapping.Wrap };
-            ScrollViewer sv = new ScrollViewer();
+            var output = new RichTextBlock() { FontFamily = new FontFamily("Consolas"), TextWrapping = TextWrapping.Wrap };
+            var sv = new ScrollViewer();
             sv.MaxHeight = 500;
-            Paragraph par = new Paragraph();
+            var par = new Paragraph();
             foreach (var line in ProcessOutput)
                 par.Inlines.Add(new Run() { Text = line + "\x0a" });
             output.Blocks.Add(par);
@@ -478,7 +478,7 @@ namespace ModernWindow.PackageEngine.Operations
             dialog.CloseButtonText = Tools.Translate("Close");
             dialog.DefaultButton = ContentDialogButton.Primary;
 
-            ContentDialogResult result = await Tools.App.MainWindow.ShowDialogAsync(dialog);
+            var result = await Tools.App.MainWindow.ShowDialogAsync(dialog);
 
             if (result == ContentDialogResult.Primary)
                 return AfterFinshAction.Retry;

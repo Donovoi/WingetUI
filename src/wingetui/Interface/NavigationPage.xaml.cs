@@ -56,8 +56,8 @@ namespace ModernWindow.Interface
             BundlesPage = new PackageBundlePage();
             IgnoredUpdatesPage = new IgnoredUpdatesManager();
 
-            int i = 0;
-            foreach (Page page in new Page[] { DiscoverPage, UpdatesPage, InstalledPage, SettingsPage, BundlesPage })
+            var i = 0;
+            foreach (var page in new Page[] { DiscoverPage, UpdatesPage, InstalledPage, SettingsPage, BundlesPage })
             {
                 Grid.SetColumn(page, 0);
                 Grid.SetRow(page, 0);
@@ -148,7 +148,7 @@ namespace ModernWindow.Interface
         private void MoreNavButton_Click(object sender, NavButton.NavButtonEventArgs e)
         {
 
-            foreach (NavButton button in Tools.App.MainWindow.NavButtonList)
+            foreach (var button in Tools.App.MainWindow.NavButtonList)
                 button.ToggleButton.IsChecked = false;
             MoreNavButton.ToggleButton.IsChecked = true;
 
@@ -157,7 +157,7 @@ namespace ModernWindow.Interface
 
             MoreNavButtonMenu.Closed += (s, e) =>
             {
-                foreach (NavButton button in Tools.App.MainWindow.NavButtonList)
+                foreach (var button in Tools.App.MainWindow.NavButtonList)
                     button.ToggleButton.IsChecked = (button == PageButtonReference[CurrentPage]);
             };
         }
@@ -176,13 +176,13 @@ namespace ModernWindow.Interface
             AboutDialog.Resources["ContentDialogMaxHeight"] = 1000;
             AboutDialog.Content = AboutPage;
             AboutDialog.PrimaryButtonText = Tools.Translate("Close");
-            foreach (NavButton button in Tools.App.MainWindow.NavButtonList)
+            foreach (var button in Tools.App.MainWindow.NavButtonList)
                 button.ToggleButton.IsChecked = false;
 
             await Tools.App.MainWindow.ShowDialogAsync(AboutDialog);
 
             AboutDialog.Content = null;
-            foreach (NavButton button in Tools.App.MainWindow.NavButtonList)
+            foreach (var button in Tools.App.MainWindow.NavButtonList)
                 button.ToggleButton.IsChecked = (button == PageButtonReference[CurrentPage]);
             AboutDialog = null;
         }
@@ -238,13 +238,13 @@ namespace ModernWindow.Interface
                 await Task.Delay(100);
             }
 
-            string NEW_NAME = "UnigetUI";
+            var NEW_NAME = "UnigetUI";
 
             AdminDialog.XamlRoot = this.XamlRoot;
             AdminDialog.PrimaryButtonText = Tools.Translate("I understand");
             AdminDialog.DefaultButton = ContentDialogButton.Primary;
             AdminDialog.SecondaryButtonClick += IgnoredUpdatesPage.ManageIgnoredUpdates_SecondaryButtonClick;
-            StackPanel p = new StackPanel() { Spacing = 16 };
+            var p = new StackPanel() { Spacing = 16 };
             AdminDialog.Content = p;
 
             p.Children.Add(new Image() { Source = new BitmapImage() { UriSource = new Uri("ms-appx:///Assets/Images/icon.png") }, Height = 96 });
@@ -290,7 +290,7 @@ namespace ModernWindow.Interface
             OptionsDialog.Title = Tools.Translate("{0} installation options").Replace("{0}", package.Name);
             OptionsDialog.Content = OptionsPage;
 
-            ContentDialogResult result = await Tools.App.MainWindow.ShowDialogAsync(OptionsDialog);
+            var result = await Tools.App.MainWindow.ShowDialogAsync(OptionsDialog);
             OptionsPage.SaveToDisk();
 
             OptionsDialog.Content = null;
@@ -325,7 +325,7 @@ namespace ModernWindow.Interface
 
         private void NavigateToPage(Page TargetPage)
         {
-            foreach (Page page in PageButtonReference.Keys)
+            foreach (var page in PageButtonReference.Keys)
                 if (page.Visibility == Visibility.Visible)
                     OldPage = page;
             if (!PageButtonReference.ContainsKey(TargetPage))
@@ -335,13 +335,13 @@ namespace ModernWindow.Interface
                 Grid.SetRow(TargetPage, 0);
                 MainContentPresenterGrid.Children.Add(TargetPage);
             }
-            foreach (NavButton button in Tools.App.MainWindow.NavButtonList)
+            foreach (var button in Tools.App.MainWindow.NavButtonList)
             {
 
                 button.ToggleButton.IsChecked = (button == PageButtonReference[TargetPage]);
             }
 
-            foreach (Page page in PageButtonReference.Keys)
+            foreach (var page in PageButtonReference.Keys)
                 page.Visibility = (page == TargetPage) ? Visibility.Visible : Visibility.Collapsed;
 
             CurrentPage = TargetPage;
@@ -393,7 +393,7 @@ namespace ModernWindow.Interface
             DetailsDialog.Content = DetailsPage;
             DetailsDialog.SizeChanged += (s, e) =>
             {
-                int hOffset = (ActualWidth < 1300) ? 100 : 300;
+                var hOffset = (ActualWidth < 1300) ? 100 : 300;
                 DetailsPage.MinWidth = ActualWidth - hOffset;
                 DetailsPage.MinHeight = ActualHeight - 100;
                 DetailsPage.MaxWidth = ActualWidth - hOffset;

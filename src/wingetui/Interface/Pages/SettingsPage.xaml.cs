@@ -39,7 +39,7 @@ namespace ModernWindow.Interface
             InitializeComponent();
 
             // General Settings Section
-            Dictionary<string, string> lang_dict = LanguageData.LanguageList;
+            var lang_dict = LanguageData.LanguageList;
 
             foreach(var key in lang_dict.Keys)
             {
@@ -47,8 +47,8 @@ namespace ModernWindow.Interface
                     lang_dict[key] = lang_dict[key] + " (" + LanguageData.TranslatedPercentages[key] + ")";
             }
 
-            bool isFirst = true;
-            foreach (KeyValuePair<string, string> entry in lang_dict)
+            var isFirst = true;
+            foreach (var entry in lang_dict)
             {
                 LanguageSelector.AddItem(entry.Value, entry.Key.ToString(), isFirst);
                 isFirst = false;
@@ -72,7 +72,7 @@ namespace ModernWindow.Interface
                 {Tools.Translate("1 week"), "604800"}
             };
 
-            foreach (KeyValuePair<string, string> entry in updates_dict)
+            foreach (var entry in updates_dict)
             {
                 UpdatesCheckIntervalSelector.AddItem(entry.Key, entry.Value.ToString(), false);
             }
@@ -106,8 +106,8 @@ namespace ModernWindow.Interface
             OpenBackupDirectory.Content = Tools.Translate("Open");
 
             // Admin Settings Section
-            int index = 2;
-            foreach (PackageManager manager in Tools.App.PackageManagerList)
+            var index = 2;
+            foreach (var manager in Tools.App.PackageManagerList)
             {
             }
 
@@ -119,7 +119,7 @@ namespace ModernWindow.Interface
             Dictionary<PackageManager, SettingsEntry> PackageManagerExpanders = new();
             Dictionary<PackageManager, List<SettingsCard>> ExtraSettingsCards = new();
 
-            foreach (PackageManager Manager in Tools.App.PackageManagerList)
+            foreach (var Manager in Tools.App.PackageManagerList)
             {
                 ExtraSettingsCards.Add(Manager, new List<SettingsCard>());
             }
@@ -165,7 +165,7 @@ namespace ModernWindow.Interface
 
 
 
-            foreach (PackageManager Manager in Tools.App.PackageManagerList)
+            foreach (var Manager in Tools.App.PackageManagerList)
             {
 
                 SettingsEntry ManagerExpander = new()
@@ -250,7 +250,7 @@ namespace ModernWindow.Interface
                 void EnableOrDisableEntries()
                 {
                     if (ExtraSettingsCards.ContainsKey(Manager))
-                        foreach (SettingsCard card in ExtraSettingsCards[Manager])
+                        foreach (var card in ExtraSettingsCards[Manager])
                         {
                             if (ManagerSwitch.IsOn)
                                 card.Visibility = Visibility.Visible;
@@ -297,7 +297,7 @@ namespace ModernWindow.Interface
                 }
 
                 if (ExtraSettingsCards.ContainsKey(Manager))
-                    foreach (SettingsCard card in ExtraSettingsCards[Manager])
+                    foreach (var card in ExtraSettingsCards[Manager])
                     {
                         ManagerExpander.Items.Add(card);
                     }
@@ -414,7 +414,7 @@ namespace ModernWindow.Interface
         {
 
             var openPicker = new Pickers.FolderPicker(Tools.App.MainWindow.GetWindowHandle());
-            string folder = openPicker.Show();
+            var folder = openPicker.Show();
             if (folder != String.Empty)
             {
                 Tools.SetSettingsValue("ChangeBackupOutputDirectory", folder);
@@ -430,7 +430,7 @@ namespace ModernWindow.Interface
 
         private void OpenBackupPath_Click(object sender, RoutedEventArgs e)
         {
-            string directory = Tools.GetSettingsValue("ChangeBackupOutputDirectory");
+            var directory = Tools.GetSettingsValue("ChangeBackupOutputDirectory");
             if (directory == "")
                 directory = CoreData.WingetUI_DefaultBackupDirectory;
 
@@ -492,7 +492,7 @@ namespace ModernWindow.Interface
 
         private void EditAutostartSettings_Click(object sender, ButtonCardEventArgs e)
         {
-            Process p = new Process();
+            var p = new Process();
             p.StartInfo = new ProcessStartInfo()
             {
                 FileName = "cmd.exe",

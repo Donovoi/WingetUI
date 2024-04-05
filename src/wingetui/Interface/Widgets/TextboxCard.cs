@@ -109,10 +109,10 @@ namespace ModernWindow.Interface.Widgets
 
         public void SaveValue()
         {
-            string SanitizedText = _textbox.Text;
+            var SanitizedText = _textbox.Text;
 
             if (SettingName.Contains("File"))
-                foreach (char rem in "#%&{}\\/<>*?$!'\":;@`|~")
+                foreach (var rem in "#%&{}\\/<>*?$!'\":;@`|~")
                     SanitizedText = SanitizedText.Replace(rem.ToString(), "");
 
             if (SanitizedText != "")

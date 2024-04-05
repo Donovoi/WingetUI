@@ -51,8 +51,8 @@ namespace ModernWindow.Interface.Widgets
                 typeof(NavButton),
                 new PropertyMetadata(default(string), new PropertyChangedCallback((d, e) =>
                 {
-                    string val = Tools.Translate((string)e.NewValue);
-                    int count = val.Count(x => x == ' ');
+                    var val = Tools.Translate((string)e.NewValue);
+                    var count = val.Count(x => x == ' ');
                     TextBlock.Text = val.Replace(" ", "\x0a");
                     ToggleButton.Content = val.Replace(" ", "\x0a");
                 }))

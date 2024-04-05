@@ -76,7 +76,7 @@ namespace ModernWindow.Interface
                     AppTools.Log((e.OriginalSource as FrameworkElement).DataContext);
                     if ((e.OriginalSource as FrameworkElement).DataContext is TreeViewNode)
                     {
-                        TreeViewNode node = (e.OriginalSource as FrameworkElement).DataContext as TreeViewNode;
+                        var node = (e.OriginalSource as FrameworkElement).DataContext as TreeViewNode;
                         if (node == null)
                             return;
                         if (SourcesTreeView.SelectedNodes.Contains(node))
@@ -147,7 +147,7 @@ namespace ModernWindow.Interface
                 }
             };
 
-            int width = 250;
+            var width = 250;
             try
             {
                 width = int.Parse(Tools.GetSettingsValue("SidepanelWidthBundlesPage"));
@@ -169,7 +169,7 @@ namespace ModernWindow.Interface
         {
             if (!Initialized)
                 return;
-            ManagerSource source = package.Source;
+            var source = package.Source;
             if (!UsedManagers.Contains(source.Manager))
             {
                 UsedManagers.Add(source.Manager);
@@ -256,7 +256,7 @@ namespace ModernWindow.Interface
 
             if (SourcesTreeView.SelectedNodes.Count > 0)
             {
-                foreach (TreeViewNode node in SourcesTreeView.SelectedNodes)
+                foreach (var node in SourcesTreeView.SelectedNodes)
                 {
                     if (NodesForSources.ContainsValue(node))
                         VisibleSources.Add(NodesForSources.First(x => x.Value == node).Key);
@@ -277,8 +277,8 @@ namespace ModernWindow.Interface
             if (IgnoreSpecialCharsCheckbox.IsChecked == true)
                 CharsFunc = (x) =>
                 {
-                    string temp_x = CaseFunc(x).Replace("-", "").Replace("_", "").Replace(" ", "").Replace("@", "").Replace("\t", "").Replace(".", "").Replace(",", "").Replace(":", "");
-                    foreach (KeyValuePair<char, string> entry in new Dictionary<char, string>
+                    var temp_x = CaseFunc(x).Replace("-", "").Replace("_", "").Replace(" ", "").Replace("@", "").Replace("\t", "").Replace(".", "").Replace(",", "").Replace(":", "");
+                    foreach (var entry in new Dictionary<char, string>
                         {
                             {'a', "àáäâ"},
                             {'e', "èéëê"},
@@ -290,7 +290,7 @@ namespace ModernWindow.Interface
                             {'ñ', "n"},
                         })
                     {
-                        foreach (char InvalidChar in entry.Value)
+                        foreach (var InvalidChar in entry.Value)
                             x = x.Replace(InvalidChar, entry.Key);
                     }
                     return temp_x;
@@ -306,8 +306,8 @@ namespace ModernWindow.Interface
                 MatchingList = Packages.Where(x => CharsFunc(x.Package.Name).Contains(CharsFunc(query)) | CharsFunc(x.Package.Id).Contains(CharsFunc(query))).ToArray();
 
             FilteredPackages.BlockSorting = true;
-            int HiddenPackagesDueToSource = 0;
-            foreach (BundledPackage match in MatchingList)
+            var HiddenPackagesDueToSource = 0;
+            foreach (var match in MatchingList)
             {
                 if ((VisibleManagers.Contains(match.Package.Manager) && match.Package.Manager != Tools.App.Winget) || VisibleSources.Contains(match.Package.Source))
                     FilteredPackages.Add(match);
@@ -435,7 +435,7 @@ namespace ModernWindow.Interface
                 { HelpButton,             Tools.Translate("Help") }
             };
 
-            foreach (AppBarButton toolButton in Labels.Keys)
+            foreach (var toolButton in Labels.Keys)
             {
                 toolButton.IsCompact = Labels[toolButton][0] == ' ';
                 if (toolButton.IsCompact)
@@ -457,7 +457,7 @@ namespace ModernWindow.Interface
                 { HelpButton,             "help" }
             };
 
-            foreach (AppBarButton toolButton in Icons.Keys)
+            foreach (var toolButton in Icons.Keys)
                 toolButton.Icon = new LocalIcon(Icons[toolButton]);
 
             PackageDetails.Click += (s, e) =>
@@ -475,7 +475,7 @@ namespace ModernWindow.Interface
 
             RemoveSelected.Click += (s, e) =>
             {
-                foreach (BundledPackage package in FilteredPackages.ToArray())
+                foreach (var package in FilteredPackages.ToArray())
                     if (package.IsChecked)
                     {
                         FilteredPackages.Remove(package);
@@ -487,7 +487,7 @@ namespace ModernWindow.Interface
             InstallPackages.Click += async (s, e) =>
             {
                 Tools.App.MainWindow.ShowLoadingDialog(Tools.Translate("Preparing packages, please wait..."));
-                foreach (BundledPackage package in FilteredPackages.ToArray())
+                foreach (var package in FilteredPackages.ToArray())
                     if (package.IsChecked && package.IsValid)
                     {
                         // Actually import settings
@@ -502,7 +502,7 @@ namespace ModernWindow.Interface
 
                 Tools.App.MainWindow.HideLoadingDialog();
 
-                foreach (BundledPackage package in FilteredPackages.ToArray())
+                foreach (var package in FilteredPackages.ToArray())
                     if (package.IsChecked && package.IsValid)
                         Tools.AddOperationToList(new InstallPackageOperation(package.Package));
 
@@ -570,14 +570,14 @@ namespace ModernWindow.Interface
 
         private void SelectAllItems()
         {
-            foreach (BundledPackage package in FilteredPackages.ToArray())
+            foreach (var package in FilteredPackages.ToArray())
                 package.IsChecked = true;
             AllSelected = true;
         }
 
         private void ClearItemSelection()
         {
-            foreach (BundledPackage package in FilteredPackages.ToArray())
+            foreach (var package in FilteredPackages.ToArray())
                 package.IsChecked = false;
             AllSelected = false;
         }
@@ -632,7 +632,7 @@ namespace ModernWindow.Interface
                 else
                     formatType = BundleFormatType.JSON;
 
-                string fileContent = await File.ReadAllTextAsync(file);
+                var fileContent = await File.ReadAllTextAsync(file);
 
                 // Import packages to list
                 await AddPackagesFromBundleString(fileContent, formatType);
@@ -654,13 +654,13 @@ namespace ModernWindow.Interface
                 DeserializedData = JsonSerializer.Deserialize<SerializableBundle_v1>(content);
             else if (format == BundleFormatType.YAML)
             {
-                IDeserializer deserializer = new DeserializerBuilder()
+                var deserializer = new DeserializerBuilder()
                     .Build();
                 DeserializedData = deserializer.Deserialize<SerializableBundle_v1>(content);
             }
             else
             {
-                string tempfile = Path.GetTempFileName();
+                var tempfile = Path.GetTempFileName();
                 await File.WriteAllTextAsync(tempfile, content);
                 StreamReader reader = new(tempfile);
                 XmlSerializer serializer = new(typeof(SerializableBundle_v1));
@@ -680,12 +680,12 @@ namespace ModernWindow.Interface
 
             // Get a list of all managers
             Dictionary<string, PackageManager> ManagerSourceReference = new();
-            foreach (PackageManager manager in AppTools.Instance.App.PackageManagerList)
+            foreach (var manager in AppTools.Instance.App.PackageManagerList)
             {
                 ManagerSourceReference.Add(manager.Name, manager);
             }
 
-            foreach (SerializableValidPackage_v1 DeserializedPackage in DeserializedData.packages)
+            foreach (var DeserializedPackage in DeserializedData.packages)
             {
                 // Check if the manager exists
                 if (!ManagerSourceReference.ContainsKey(DeserializedPackage.ManagerName))
@@ -693,7 +693,7 @@ namespace ModernWindow.Interface
                     AddPackage(new InvalidBundledPackage(DeserializedPackage.Name, DeserializedPackage.Id, DeserializedPackage.Version, DeserializedPackage.Source, DeserializedPackage.ManagerName));
                     continue;
                 }
-                PackageManager PackageManager = ManagerSourceReference[DeserializedPackage.ManagerName];
+                var PackageManager = ManagerSourceReference[DeserializedPackage.ManagerName];
 
                 // Handle a disabled manager
                 if (!PackageManager.IsEnabled())
@@ -708,12 +708,12 @@ namespace ModernWindow.Interface
                     continue;
                 }
 
-                ManagerSource Source = PackageManager.GetMainSource();
+                var Source = PackageManager.GetMainSource();
 
                 if (PackageManager.Capabilities.SupportsCustomSources && PackageManager is PackageManagerWithSources)
                 {
                     // Check if the source exists
-                    string SourceName = DeserializedPackage.Source.Split(':')[^1].Trim();
+                    var SourceName = DeserializedPackage.Source.Split(':')[^1].Trim();
                     Source = (PackageManager as PackageManagerWithSources).SourceFactory.GetSourceIfExists(SourceName);
 
                     if (Source == null)
@@ -725,8 +725,8 @@ namespace ModernWindow.Interface
 
                 Package package = new(DeserializedPackage.Name, DeserializedPackage.Id, DeserializedPackage.Version, Source, PackageManager);
 
-                InstallationOptions InstallOptions = InstallationOptions.FromSerialized(DeserializedPackage.InstallationOptions, package);
-                SerializableUpdatesOptions_v1 UpdateOptions = DeserializedPackage.Updates;
+                var InstallOptions = InstallationOptions.FromSerialized(DeserializedPackage.InstallationOptions, package);
+                var UpdateOptions = DeserializedPackage.Updates;
 
                 BundledPackage newPackage = new(package, InstallOptions, UpdateOptions);
                 AddPackage(newPackage);
@@ -736,7 +736,7 @@ namespace ModernWindow.Interface
         public async static Task<string> GetBundleStringFromPackages(BundledPackage[] packages, BundleFormatType formatType = BundleFormatType.JSON)
         {
             SerializableBundle_v1 exportable = new();
-            foreach (BundledPackage package in packages)
+            foreach (var package in packages)
                 if (!package.IsValid)
                     exportable.incompatible_packages.Add(package.AsSerializable_Incompatible());
                 else
@@ -749,13 +749,13 @@ namespace ModernWindow.Interface
                 ExportableData = JsonSerializer.Serialize<SerializableBundle_v1>(exportable, new JsonSerializerOptions() { WriteIndented = true });
             else if (formatType == BundleFormatType.YAML)
             {
-                ISerializer serializer = new SerializerBuilder()
+                var serializer = new SerializerBuilder()
                     .Build();
                 ExportableData = serializer.Serialize(exportable);
             }
             else
             {
-                string tempfile = Path.GetTempFileName();
+                var tempfile = Path.GetTempFileName();
                 StreamWriter writer = new(tempfile);
                 XmlSerializer serializer = new(typeof(SerializableBundle_v1));
                 serializer.Serialize(writer, exportable);
@@ -782,7 +782,7 @@ namespace ModernWindow.Interface
                     Tools.App.MainWindow.ShowLoadingDialog(Tools.Translate("Saving packages, please wait..."));
 
                     List<BundledPackage> packages = new();
-                    foreach (BundledPackage package in Packages)
+                    foreach (var package in Packages)
                         packages.Add(package);
 
                     // Select appropriate format

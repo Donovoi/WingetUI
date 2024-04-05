@@ -127,7 +127,7 @@ namespace ModernWindow
                 if (Tools.OperationQueue.Count > 0)
                 {
                     args.Cancel = true;
-                    ContentDialog d = new ContentDialog();
+                    var d = new ContentDialog();
                     d.XamlRoot = NavigationPage.XamlRoot;
                     d.Title = Tools.Translate("Operation in progress");
                     d.Content = Tools.Translate("There are ongoing operations. Quitting WingetUI may cause them to fail. Do you want to continue?");
@@ -176,7 +176,7 @@ namespace ModernWindow
                 { QuitWingetUI, "Quit" },
             };
 
-            foreach (KeyValuePair<XamlUICommand, string> item in Labels)
+            foreach (var item in Labels)
             {
                 item.Key.Label = Tools.Translate(item.Value);
             }
@@ -191,7 +191,7 @@ namespace ModernWindow
                 { QuitWingetUI,  "\uE711"},
             };
 
-            foreach (KeyValuePair<XamlUICommand, string> item in Icons)
+            foreach (var item in Icons)
             {
                 item.Key.IconSource = new FontIconSource { Glyph = item.Value };
             }
@@ -248,8 +248,8 @@ namespace ModernWindow
 
         public void UpdateSystemTrayStatus()
         {
-            string modifier = "_empty";
-            string tooltip = Tools.Translate("Everything is up to date") + " - " + Title;
+            var modifier = "_empty";
+            var tooltip = Tools.Translate("Everything is up to date") + " - " + Title;
 
             if (Tools.TooltipStatus.OperationsInProgress > 0)
             {
@@ -277,14 +277,14 @@ namespace ModernWindow
 
             TrayIcon.ToolTipText = tooltip;
 
-            ApplicationTheme theme = ApplicationTheme.Light;
-            string RegistryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-            string RegistryValueName = "SystemUsesLightTheme";
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath);
-            object registryValueObject = key?.GetValue(RegistryValueName);
+            var theme = ApplicationTheme.Light;
+            var RegistryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            var RegistryValueName = "SystemUsesLightTheme";
+            var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath);
+            var registryValueObject = key?.GetValue(RegistryValueName);
             if (registryValueObject != null)
             {
-                int registryValue = (int)registryValueObject;
+                var registryValue = (int)registryValueObject;
                 theme = registryValue > 0 ? ApplicationTheme.Light : ApplicationTheme.Dark;
             }
             if (theme == ApplicationTheme.Light)
@@ -293,7 +293,7 @@ namespace ModernWindow
                 modifier += "_white";
 
 
-            string FullIconPath = Path.Join(Directory.GetParent(Assembly.GetEntryAssembly().Location).ToString(), "\\Assets\\Images\\tray" + modifier + ".ico");
+            var FullIconPath = Path.Join(Directory.GetParent(Assembly.GetEntryAssembly().Location).ToString(), "\\Assets\\Images\\tray" + modifier + ".ico");
 
             TrayIcon.SetValue(TaskbarIcon.IconSourceProperty, new BitmapImage() { UriSource = new Uri(FullIconPath) });
         }
@@ -310,16 +310,16 @@ namespace ModernWindow
             Grid.SetColumn(NavigationPage, 0);
             MainContentGrid.Children.Add(NavigationPage);
 
-            ColumnDefinition ContentColumn = __content_root.ColumnDefinitions[1];
+            var ContentColumn = __content_root.ColumnDefinitions[1];
             ContentColumn.Width = new GridLength(1, GridUnitType.Star);
 
-            ColumnDefinition SpashScreenColumn = __content_root.ColumnDefinitions[0];
+            var SpashScreenColumn = __content_root.ColumnDefinitions[0];
             SpashScreenColumn.Width = new GridLength(0, GridUnitType.Pixel);
         }
 
         public void ApplyTheme()
         {
-            string preferredTheme = Tools.GetSettingsValue("PreferredTheme");
+            var preferredTheme = Tools.GetSettingsValue("PreferredTheme");
             if (preferredTheme == "dark")
             {
                 Tools.ThemeListener.CurrentTheme = ApplicationTheme.Dark;
@@ -382,19 +382,19 @@ namespace ModernWindow
             if (package == null)
                 return;
 
-            IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
 
-            IDataTransferManagerInterop interop =
+            var interop =
             Windows.ApplicationModel.DataTransfer.DataTransferManager.As
                 <IDataTransferManagerInterop>();
 
-            IntPtr result = interop.GetForWindow(hWnd, _dtm_iid);
-            DataTransferManager dataTransferManager = WinRT.MarshalInterface
+            var result = interop.GetForWindow(hWnd, _dtm_iid);
+            var dataTransferManager = WinRT.MarshalInterface
                 <Windows.ApplicationModel.DataTransfer.DataTransferManager>.FromAbi(result);
 
             dataTransferManager.DataRequested += (sender, args) =>
             {
-                DataRequest dataPackage = args.Request;
+                var dataPackage = args.Request;
                 Uri ShareUrl = new("https://marticliment.com/wingetui/share?pid=" + System.Web.HttpUtility.UrlEncode(package.Id) + "&pname=" + System.Web.HttpUtility.UrlEncode(package.Name) + "&psource=" + System.Web.HttpUtility.UrlEncode(package.Source.ToString()));
                 dataPackage.Data.SetWebLink(ShareUrl);
                 dataPackage.Data.Properties.Title = "Sharing " + package.Name;
@@ -425,7 +425,7 @@ namespace ModernWindow
                 while (DialogQueue[0] != dialog)
                     await Task.Delay(100);
                 dialog.RequestedTheme = ContentRoot.RequestedTheme;
-                ContentDialogResult result = await dialog.ShowAsync();
+                var result = await dialog.ShowAsync();
                 DialogQueue.Remove(dialog);
                 return result;
             }

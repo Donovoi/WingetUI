@@ -28,8 +28,8 @@ namespace ModernWindow.Essentials
         {
             BlockSorting = true;
 
-            List<T> sorted = Descending ? this.OrderByDescending(SortingSelector).ToList() : this.OrderBy(SortingSelector).ToList();
-            foreach (T item in sorted)
+            var sorted = Descending ? this.OrderByDescending(SortingSelector).ToList() : this.OrderBy(SortingSelector).ToList();
+            foreach (var item in sorted)
             {
                 Move(IndexOf(item), sorted.IndexOf(item));
             }

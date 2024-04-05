@@ -150,7 +150,7 @@ namespace ModernWindow.Interface
                 if (!AppTools.Instance.AuthenticateToken(Request.Query.@token))
                     return 401;
 
-                string packages = "";
+                var packages = "";
                 foreach(var package in AppTools.Instance.App.MainWindow.NavigationPage.UpdatesPage.Packages)
                 {
                     if(package.Tag == PackageEngine.Classes.PackageTag.OnQueue || package.Tag == PackageEngine.Classes.PackageTag.BeingProcessed)

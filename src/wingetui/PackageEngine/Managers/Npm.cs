@@ -35,8 +35,8 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
             string line;
             List<Package> Packages = new();
-            bool HeaderPassed = false;
-            string output = "";
+            var HeaderPassed = false;
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -45,7 +45,7 @@ namespace ModernWindow.PackageEngine.Managers
                         HeaderPassed = true;
                     else
                     {
-                        string[] elements = line.Split('\t');
+                        var elements = line.Split('\t');
                         if (elements.Length >= 5)
                             Packages.Add(new Package(Tools.FormatAsName(elements[0]), elements[0], elements[4], MainSource, this));
                     }
@@ -75,11 +75,11 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
             string line;
             List<UpgradablePackage> Packages = new();
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
-                string[] elements = line.Split(':');
+                var elements = line.Split(':');
                 if (elements.Length >= 4)
                 {
                     Packages.Add(new UpgradablePackage(Tools.FormatAsName(elements[2].Split('@')[0]), elements[2].Split('@')[0], elements[3].Split('@')[^1], elements[2].Split('@')[^1], MainSource, this));
@@ -104,7 +104,7 @@ namespace ModernWindow.PackageEngine.Managers
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
-                string[] elements = line.Split(':');
+                var elements = line.Split(':');
                 if (elements.Length >= 4)
                 {
                     if (elements[2][0] == '@')
@@ -145,13 +145,13 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
             string line;
             List<Package> Packages = new();
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (line.Contains("--") || line.Contains("├─") || line.Contains("└─"))
                 {
-                    string[] elements = line[4..].Split('@');
+                    var elements = line[4..].Split('@');
                     Packages.Add(new Package(Tools.FormatAsName(elements[0]), elements[0], elements[1], MainSource, this));
                 }
             }
@@ -177,7 +177,7 @@ namespace ModernWindow.PackageEngine.Managers
                 if (line.Contains("--") || line.Contains("├─") || line.Contains("└─"))
                 {
                     line = line.Replace("- @", "- %");
-                    string[] elements = line[4..].Split('@');
+                    var elements = line[4..].Split('@');
                     Packages.Add(new Package(Tools.FormatAsName(elements[0].Replace('%', '@')), elements[0].Replace('%', '@'), elements[1], MainSource, this, PackageScope.Global));
                 }
             }
@@ -205,7 +205,7 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
-            string[] parameters = GetUninstallParameters(package, options);
+            var parameters = GetUninstallParameters(package, options);
             parameters[0] = Properties.InstallVerb;
 
             if (options.Version != "")
@@ -217,7 +217,7 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetUpdateParameters(Package package, InstallationOptions options)
         {
-            string[] parameters = GetUninstallParameters(package, options);
+            var parameters = GetUninstallParameters(package, options);
             parameters[0] = Properties.UpdateVerb;
             parameters[1] = package.Id + "@" + package.NewVersion;
             return parameters;
@@ -273,9 +273,9 @@ namespace ModernWindow.PackageEngine.Managers
                         output.Add(line);
                     }
 
-                    int lineNo = 0;
-                    bool ReadingMaintainer = false;
-                    foreach (string outLine in output)
+                    var lineNo = 0;
+                    var ReadingMaintainer = false;
+                    foreach (var outLine in output)
                     {
                         try
                         {

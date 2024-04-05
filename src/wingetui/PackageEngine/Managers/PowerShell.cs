@@ -38,8 +38,8 @@ namespace ModernWindow.PackageEngine.Managers
             await p.StandardInput.WriteLineAsync("");
             string line;
             List<Package> Packages = new();
-            bool DashesPassed = false;
-            string output = "";
+            var DashesPassed = false;
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -50,11 +50,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 3)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                     Packages.Add(new Package(Tools.FormatAsName(elements[1]), elements[1], elements[0], SourceFactory.GetSourceOrDefault(elements[2]), this));
                 }
@@ -110,18 +110,18 @@ namespace ModernWindow.PackageEngine.Managers
                 "); // do NOT remove the trailing endline
             string line;
             List<UpgradablePackage> Packages = new();
-            string output = "";
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (line.StartsWith(">>"))
                     continue;
 
-                string[] elements = line.Split('|');
+                var elements = line.Split('|');
                 if (elements.Length < 4)
                     continue;
 
-                for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                 if (elements[1] + ".0" == elements[2] || elements[1] + ".0.0" == elements[2])
                     continue;
@@ -154,8 +154,8 @@ namespace ModernWindow.PackageEngine.Managers
             p.Start();
             string line;
             List<Package> Packages = new();
-            bool DashesPassed = false;
-            string output = "";
+            var DashesPassed = false;
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -166,11 +166,11 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 3)
                         continue;
 
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                     Packages.Add(new Package(Tools.FormatAsName(elements[1]), elements[1], elements[0], SourceFactory.GetSourceOrDefault(elements[2]), this));
                 }
@@ -195,7 +195,7 @@ namespace ModernWindow.PackageEngine.Managers
 
         public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            string output_string = string.Join("\n", Output);
+            var output_string = string.Join("\n", Output);
 
             if (output_string.Contains("AdminPrivilegesAreRequired") && !options.RunAsAdministrator)
             {
@@ -207,7 +207,7 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
-            List<string> parameters = GetUpdateParameters(package, options).ToList();
+            var parameters = GetUpdateParameters(package, options).ToList();
             parameters[0] = Properties.InstallVerb;
 
             parameters.AddRange(new string[] { "-AllowClobber" });
@@ -224,7 +224,7 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetUpdateParameters(Package package, InstallationOptions options)
         {
-            List<string> parameters = GetUninstallParameters(package, options).ToList();
+            var parameters = GetUninstallParameters(package, options).ToList();
             parameters[0] = Properties.UpdateVerb;
 
             if (options.PreRelease)
@@ -277,8 +277,8 @@ namespace ModernWindow.PackageEngine.Managers
 
                 try
                 {
-                    string entry = line.Split('=')[0].Split(' ')[^1];
-                    string PossibleContent = line.Split('=')[1].Trim();
+                    var entry = line.Split('=')[0].Split(' ')[^1];
+                    var PossibleContent = line.Split('=')[1].Trim();
                     if (PossibleContent == "null")
                         continue;
 
@@ -343,9 +343,9 @@ namespace ModernWindow.PackageEngine.Managers
             process.StartInfo = startInfo;
             process.Start();
 
-            bool dashesPassed = false;
+            var dashesPassed = false;
             string line;
-            string output = "";
+            var output = "";
             while ((line = await process.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -361,7 +361,7 @@ namespace ModernWindow.PackageEngine.Managers
                     }
                     else
                     {
-                        string[] parts = Regex.Replace(line.Trim(), " {2,}", " ").Split(' ');
+                        var parts = Regex.Replace(line.Trim(), " {2,}", " ").Split(' ');
                         if (parts.Length >= 3)
                             sources.Add(new ManagerSource(this, parts[0].Trim(), new Uri(parts[2].Trim())));
                     }
@@ -472,8 +472,8 @@ namespace ModernWindow.PackageEngine.Managers
 
             string line;
             List<string> versions = new();
-            bool DashesPassed = false;
-            string output = "";
+            var DashesPassed = false;
+            var output = "";
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
@@ -484,7 +484,7 @@ namespace ModernWindow.PackageEngine.Managers
                 }
                 else
                 {
-                    string[] elements = Regex.Replace(line, " {2,}", " ").Split(' ');
+                    var elements = Regex.Replace(line, " {2,}", " ").Split(' ');
                     if (elements.Length < 3)
                         continue;
 

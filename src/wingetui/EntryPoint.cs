@@ -50,7 +50,7 @@ namespace ModernWindow
 
                 // WinRT single-instance fancy stuff
                 WinRT.ComWrappersSupport.InitializeComWrappers();
-                bool isRedirect = await DecideRedirection();
+                var isRedirect = await DecideRedirection();
 
                 // If this is the main instance, start the app
                 if (!isRedirect)
@@ -80,17 +80,17 @@ namespace ModernWindow
             {
                 // Idk how does this work, I copied it from the MS Docs
                 // example on single-instance apps using unpackaged AppSdk + WinUI3
-                bool isRedirect = false;
-                AppActivationArguments args = AppInstance.GetCurrent().GetActivatedEventArgs();
-                ExtendedActivationKind kind = args.Kind;
+                var isRedirect = false;
+                var args = AppInstance.GetCurrent().GetActivatedEventArgs();
+                var kind = args.Kind;
 
-                AppInstance keyInstance = AppInstance.FindOrRegisterForKey("MartiCliment.WingetUI.NeXT");
+                var keyInstance = AppInstance.FindOrRegisterForKey("MartiCliment.WingetUI.NeXT");
 
                 if (keyInstance.IsCurrent)
                 {
                     keyInstance.Activated += async (s, e) =>
                     {
-                        MainApp AppInstance = MainApp.Current as MainApp;
+                        var AppInstance = MainApp.Current as MainApp;
                         await AppInstance.ShowMainWindowFromRedirectAsync();
                     };
                 }

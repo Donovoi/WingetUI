@@ -34,15 +34,15 @@ namespace ModernWindow.PackageEngine.Managers
 
             p.Start();
             string line;
-            string output = "";
+            var output = "";
             List<Package> Packages = new();
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (!line.StartsWith("Chocolatey"))
                 {
-                    string[] elements = line.Split(' ');
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    var elements = line.Split(' ');
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                     if (elements.Length < 2)
                         continue;
@@ -79,15 +79,15 @@ namespace ModernWindow.PackageEngine.Managers
 
             p.Start();
             string line;
-            string output = "";
+            var output = "";
             List<UpgradablePackage> Packages = new();
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (!line.StartsWith("Chocolatey"))
                 {
-                    string[] elements = line.Split('|');
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    var elements = line.Split('|');
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                     if (elements.Length <= 2)
                         continue;
@@ -124,15 +124,15 @@ namespace ModernWindow.PackageEngine.Managers
 
             p.Start();
             string line;
-            string output = "";
+            var output = "";
             List<Package> Packages = new();
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (!line.StartsWith("Chocolatey"))
                 {
-                    string[] elements = line.Split(' ');
-                    for (int i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
+                    var elements = line.Split(' ');
+                    for (var i = 0; i < elements.Length; i++) elements[i] = elements[i].Trim();
 
                     if (elements.Length <= 1)
                         continue;
@@ -153,7 +153,7 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override OperationVerdict GetInstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            string output_string = string.Join("\n", Output);
+            var output_string = string.Join("\n", Output);
 
             if (ReturnCode == 1641 || ReturnCode == 0)
                 return OperationVerdict.Succeeded;
@@ -174,7 +174,7 @@ namespace ModernWindow.PackageEngine.Managers
 
         public override OperationVerdict GetUninstallOperationVerdict(Package package, InstallationOptions options, int ReturnCode, string[] Output)
         {
-            string output_string = string.Join("\n", Output);
+            var output_string = string.Join("\n", Output);
 
             if (ReturnCode == 1641 || ReturnCode == 1614 || ReturnCode == 1605 || ReturnCode == 0)
                 return OperationVerdict.Succeeded;
@@ -189,7 +189,7 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetInstallParameters(Package package, InstallationOptions options)
         {
-            List<string> parameters = GetUninstallParameters(package, options).ToList();
+            var parameters = GetUninstallParameters(package, options).ToList();
             parameters[0] = Properties.InstallVerb;
             parameters.Add("--no-progress");
 
@@ -209,7 +209,7 @@ namespace ModernWindow.PackageEngine.Managers
         }
         public override string[] GetUpdateParameters(Package package, InstallationOptions options)
         {
-            string[] parameters = GetInstallParameters(package, options);
+            var parameters = GetInstallParameters(package, options);
             parameters[0] = Properties.UpdateVerb;
             Array.Resize(ref parameters, parameters.Length + 1);
             parameters[parameters.Length - 1] = "--ignore-dependencies";
@@ -285,14 +285,14 @@ namespace ModernWindow.PackageEngine.Managers
                 }
 
             // Parse the output
-            bool IsLoadingDescription = false;
-            bool IsLoadingReleaseNotes = false;
-            bool IsLoadingTags = false;
-            foreach (string __line in output)
+            var IsLoadingDescription = false;
+            var IsLoadingReleaseNotes = false;
+            var IsLoadingTags = false;
+            foreach (var __line in output)
             {
                 try
                 {
-                    string line = __line.TrimEnd();
+                    var line = __line.TrimEnd();
                     if (line == "")
                         continue;
 
@@ -340,7 +340,7 @@ namespace ModernWindow.PackageEngine.Managers
                     else if (line.StartsWith(" ") && line.Contains("Tags"))
                     {
                         List<string> tags = new();
-                        foreach (string tag in line.Replace("Tags:", "").Trim().Split(' '))
+                        foreach (var tag in line.Replace("Tags:", "").Trim().Split(' '))
                         {
                             if (tag.Trim() != "")
                                 tags.Add(tag.Trim());
@@ -379,7 +379,7 @@ namespace ModernWindow.PackageEngine.Managers
             process.Start();
 
 
-            string output = "";
+            var output = "";
             string line;
             while ((line = await process.StandardOutput.ReadLineAsync()) != null)
             {
@@ -391,7 +391,7 @@ namespace ModernWindow.PackageEngine.Managers
 
                     if (line.Contains(" - ") && line.Contains(" | "))
                     {
-                        string[] parts = line.Trim().Split('|')[0].Trim().Split(" - ");
+                        var parts = line.Trim().Split('|')[0].Trim().Split(" - ");
                         if (parts[1].Trim() == "https://community.chocolatey.org/api/v2/")
                             sources.Add(new ManagerSource(this, "community", new Uri("https://community.chocolatey.org/api/v2/")));
                         else
@@ -491,7 +491,7 @@ namespace ModernWindow.PackageEngine.Managers
             if (/*Tools.GetSettings("ShownWelcomeWizard") && */!Tools.GetSettings("UseSystemChocolatey") && !Tools.GetSettings("ChocolateyAddedToPath") && !File.Exists(@"C:\ProgramData\Chocolatey\bin\choco.exe"))
             {
                 AppTools.Log("Adding chocolatey to path");
-                string path = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
+                var path = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
                 Environment.SetEnvironmentVariable("PATH", $"{status.ExecutablePath.Replace("\\choco.exe", "\\bin")};{path}", EnvironmentVariableTarget.User);
                 Environment.SetEnvironmentVariable("chocolateyinstall", Path.GetDirectoryName(status.ExecutablePath), EnvironmentVariableTarget.User);
                 Tools.SetSettings("ChocolateyAddedToPath", true);
@@ -525,14 +525,14 @@ namespace ModernWindow.PackageEngine.Managers
 
             p.Start();
             string line;
-            string output = "";
+            var output = "";
             List<string> versions = new();
             while ((line = await p.StandardOutput.ReadLineAsync()) != null)
             {
                 output += line + "\n";
                 if (!line.StartsWith("Chocolatey"))
                 {
-                    string[] elements = line.Split(' ');
+                    var elements = line.Split(' ');
                     AppTools.Log(line);
                     if (elements.Length < 2 || elements[0].Trim() != package.Id)
                         continue;

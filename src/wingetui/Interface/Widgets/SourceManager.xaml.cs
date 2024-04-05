@@ -51,7 +51,7 @@ namespace ModernWindow.Interface.Widgets
 
                     ComboBox SourcesCombo = new();
                     Dictionary<string, ManagerSource> NameSourceRef = new();
-                    foreach (ManagerSource source in Manager.KnownSources)
+                    foreach (var source in Manager.KnownSources)
                     {
                         SourcesCombo.Items.Add(source.Name);
                         NameSourceRef.Add(source.Name, source);
@@ -139,7 +139,7 @@ namespace ModernWindow.Interface.Widgets
 
             LoadingBar.Visibility = Visibility.Visible;
             Sources.Clear();
-            foreach (ManagerSource Source in await Manager.GetSources())
+            foreach (var Source in await Manager.GetSources())
             {
                 Sources.Add(new SourceItem(this, Source));
             }

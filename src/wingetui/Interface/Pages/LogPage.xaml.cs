@@ -81,7 +81,7 @@ namespace ModernWindow.Interface.Pages
             savePicker.FileTypeChoices.Add(AppTools.Instance.Translate("Text"), new List<string>() { ".txt" });
             savePicker.SuggestedFileName = AppTools.Instance.Translate("WingetUI Log");
 
-            StorageFile file = await savePicker.PickSaveFileAsync();
+            var file = await savePicker.PickSaveFileAsync();
             if (file != null)
             {
                 LogTextBox.SelectAll();

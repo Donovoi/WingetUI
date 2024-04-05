@@ -75,7 +75,7 @@ namespace ModernWindow.Core.Data
 
         public static async Task LoadIconAndScreenshotsDatabase()
         {
-            string IconsAndScreenshotsFile = Path.Join(WingetUICacheDirectory_Data, "Icon Database.json");
+            var IconsAndScreenshotsFile = Path.Join(WingetUICacheDirectory_Data, "Icon Database.json");
 
             try
             {
@@ -89,7 +89,7 @@ namespace ModernWindow.Core.Data
 
                 using (HttpClient client = new())
                 {
-                    string fileContents = await client.GetStringAsync(DownloadUrl);
+                    var fileContents = await client.GetStringAsync(DownloadUrl);
                     await File.WriteAllTextAsync(IconsAndScreenshotsFile, fileContents);
                 }
 
@@ -111,7 +111,7 @@ namespace ModernWindow.Core.Data
 
             try
             {
-                IconScreenshotDatabase_v2 JsonData = JsonSerializer.Deserialize<IconScreenshotDatabase_v2>(await File.ReadAllTextAsync(IconsAndScreenshotsFile));
+                var JsonData = JsonSerializer.Deserialize<IconScreenshotDatabase_v2>(await File.ReadAllTextAsync(IconsAndScreenshotsFile));
                 if (JsonData.icons_and_screenshots != null)
                     IconDatabaseData = JsonData.icons_and_screenshots;
             }

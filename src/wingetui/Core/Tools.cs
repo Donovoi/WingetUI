@@ -197,7 +197,7 @@ namespace ModernWindow.Structures
                 }
             };
             process.Start();
-            string line = await process.StandardOutput.ReadLineAsync();
+            var line = await process.StandardOutput.ReadLineAsync();
             string output;
             if (line == null)
                 output = "";
@@ -213,8 +213,8 @@ namespace ModernWindow.Structures
         public string FormatAsName(string name)
         {
             name = name.Replace(".install", "").Replace(".portable", "").Replace("-", " ").Replace("_", " ").Split("/")[^1];
-            string newName = "";
-            for (int i = 0; i < name.Length; i++)
+            var newName = "";
+            for (var i = 0; i < name.Length; i++)
             {
                 if (i == 0 || name[i - 1] == ' ')
                     newName += name[i].ToString().ToUpper();
@@ -259,14 +259,14 @@ namespace ModernWindow.Structures
 
         public static void ReportFatalException(Exception e)
         {
-            string LangName = "Unknown";
+            var LangName = "Unknown";
             try
             {
                 LangName = LanguageEngine.MainLangDict["langName"];
             }
             catch { }
 
-            string Error_String = $@"
+            var Error_String = $@"
                         OS: {Environment.OSVersion.Platform}
                    Version: {Environment.OSVersion.VersionString}
            OS Architecture: {Environment.Is64BitOperatingSystem}
@@ -283,7 +283,7 @@ Crash Traceback:
             Console.WriteLine(Error_String);
 
 
-            string ErrorBody = "https://www.marticliment.com/error-report/?appName=WingetUI^&errorBody=" + Uri.EscapeDataString(Error_String.Replace("\n", "{l}"));
+            var ErrorBody = "https://www.marticliment.com/error-report/?appName=WingetUI^&errorBody=" + Uri.EscapeDataString(Error_String.Replace("\n", "{l}"));
 
             Console.WriteLine(ErrorBody);
 
@@ -330,7 +330,7 @@ Crash Traceback:
             {
                 AppTools.Log("Starting update check");
 
-                string fileContents = "";
+                var fileContents = "";
 
                 using (HttpClient client = new())
                     fileContents = await client.GetStringAsync("https://www.marticliment.com/versions/wingetui.ver");
@@ -339,8 +339,8 @@ Crash Traceback:
                 if (!fileContents.Contains("///"))
                     throw new FormatException("The updates file does not follow the FloatVersion///Sha256Hash format");
 
-                float LatestVersion = float.Parse(fileContents.Split("///")[0].Replace("\n", "").Trim(), CultureInfo.InvariantCulture);
-                string InstallerHash = fileContents.Split("///")[1].Replace("\n", "").Trim().ToLower();
+                var LatestVersion = float.Parse(fileContents.Split("///")[0].Replace("\n", "").Trim(), CultureInfo.InvariantCulture);
+                var InstallerHash = fileContents.Split("///")[1].Replace("\n", "").Trim().ToLower();
 
                 if (LatestVersion > CoreData.VersionNumber)
                 {
@@ -355,8 +355,8 @@ Crash Traceback:
                     banner.IsOpen = true;
                     banner.IsClosable = false;
 
-                    Uri DownloadUrl = new Uri("https://github.com/marticliment/WingetUI/releases/latest/download/WingetUI.Installer.exe");
-                    string InstallerPath = Path.Join(Directory.CreateTempSubdirectory().FullName, "wingetui-updater.exe");
+                    var DownloadUrl = new Uri("https://github.com/marticliment/WingetUI/releases/latest/download/WingetUI.Installer.exe");
+                    var InstallerPath = Path.Join(Directory.CreateTempSubdirectory().FullName, "wingetui-updater.exe");
 
                     using (HttpClient client = new())
                     {
@@ -365,9 +365,9 @@ Crash Traceback:
                             await result.Content.CopyToAsync(fs);
                     }
 
-                    string Hash = "";
-                    SHA256 Sha256 = SHA256.Create();
-                    using (FileStream stream = File.OpenRead(InstallerPath))
+                    var Hash = "";
+                    var Sha256 = SHA256.Create();
+                    using (var stream = File.OpenRead(InstallerPath))
                     {
                         Hash = Convert.ToHexString(Sha256.ComputeHash(stream)).ToLower();
                     }
@@ -391,7 +391,7 @@ Crash Traceback:
                             await Task.Delay(100);
 
                         Log("Hash ok, starting update");
-                        Process p = new Process();
+                        var p = new Process();
                         p.StartInfo.FileName = "cmd.exe";
                         p.StartInfo.Arguments = $"/c start /B \"\" \"{InstallerPath}\" /silent";
                         p.StartInfo.UseShellExecute = true;
@@ -467,10 +467,10 @@ Crash Traceback:
             try
             {
 #pragma warning disable SYSLIB0014 // Type or member is obsolete
-                WebRequest req = WebRequest.Create(url);
+                var req = WebRequest.Create(url);
 #pragma warning restore SYSLIB0014 // Type or member is obsolete
                 req.Method = "HEAD";
-                WebResponse resp = await req.GetResponseAsync();
+                var resp = await req.GetResponseAsync();
                 long ContentLength;
                 if (long.TryParse(resp.Headers.Get("Content-Length"), out ContentLength))
                 {
