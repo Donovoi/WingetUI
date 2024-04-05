@@ -1,0 +1,3 @@
+[submodule "gsudo"]
+	path = gsudo
+	url = https://github.com/gerardog/gsudo.git
